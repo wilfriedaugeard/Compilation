@@ -20,4 +20,235 @@ static public class MyEvents extends beaver.Parser.Events {
 	report = new MyEvents();
 :};
 
+%terminals BEGIN, END, TYPE, EQUALS, SEMI;
+%terminals IDENTIFIER;
+%terminals STRING, INTEGER, BOOLEAN, LPAR, RPAR, DOT, ARRAY, LBRA, RBRA, OF, CARET, LBRACE, RBRACE, COMMA;
+%terminals VAR;
+%terminals PROCEDURE, FUNCTION, COLON;
+%terminals NEW, DISPOSE, PRINTLN, READLN, RETURN, IF, THEN, ELSE, WHILE, DO, SWITCH,CASE,DEFAULT;
+%terminals PLUS, MINUS, TIMES, DIVIDE, OR, AND,LESS, MORE, LESS_EQ, MORE_EQ,DIFFERENT, LOGIC_EQ, NOT;
+%terminals TRUE, FALSE, NULL;
 
+
+%right UNARY_MINUS;
+%left TIMES, DIVIDE;
+%left PLUS, MINUS;
+
+%goal Program;
+
+// program
+
+program = type_declaration_part
+		| variable_declaration_part
+		| procedure_definition_part
+		| BEGIN
+		| statement_list
+		| END
+		;
+
+
+// types nommés
+
+type_declaration_part =
+					  | TYPE type_declaration_list
+					  ;
+
+type_declaration_list = type_declaration_list type_declaration
+					  | type_declaration
+					  ;
+
+type_declaration = IDENTIFIER EQUALS type SEMI  // SEMI = ;
+
+
+// def de types
+
+type = simple_type
+	 | named_type
+	 | index_type
+	 | array_type
+	 | pointer_type
+	 | structure_type
+	 ;
+
+simple_type = STRING
+			| INTEGER
+			| BOOLEAN	
+			;
+
+named_type = IDENTIFIER ;
+
+index_type = enumerated_type
+		   | subrange_type
+		   ;
+
+enumerated_type = LPAR identifier_list RPAR ;
+
+subrange_type = INTEGER DOT INTEGER  // DOT = .. (?) 
+			  | IDENTIFIER DOT IDENTIFIER
+			  ;
+
+array_type = ARRAY LBRA range_type RBRA OF type	; // LBRA(cket) RBRA(cket) = []
+
+range_type = enumerated_type
+		   | subrange_type
+		   | named_type
+		   ;
+
+pointer_type = 	CARET type ;    // Caret = ^
+
+structure_type = STRUCT LBRACE feature_list_type RBRACE;  // LBRACE RBRACE = {}
+
+feature_list_type = feature_list_type feature_type
+				  | feature_type
+				  ;
+
+feature_type = IDENTIFIER COLON type SEMI  // COLON = :
+					
+
+//variables typées
+
+variable_declaration_part = 
+						  | VAR variable_declaration_list
+						  ;
+
+variable_declaration_list = variable_declaration_list variable_declaration
+						  | variable_declaration
+						  ;
+
+variable_declaration = identifier_list COLON type SEMI ;
+
+identifier_list = indentifier_list COMMA IDENTIFIER // COMMA = ,
+				| IDENTIFIER
+				;
+
+// declaration et def des procedures et fonctions
+
+procedure_definition_part = procedure_definition_list;
+
+procedure_definition_list = procedure_definition_list procedure_definition
+						  | procedure_definition
+						  ;
+
+procedure_definition = procedure_definition_head block
+					 | procedure_definition_head SEMI
+					 ;
+
+procedure_definition_head = PROCEDURE IDENTIFIER LPAR argt_part RPAR
+						  | FUNCTION IDENTIFIER LPAR argt_part RPAR COLON type 
+						  ;
+
+argt_part = 
+		 | argt_list
+		 ;
+
+argt_list = argt_list COMMA argt
+		  | argt
+		  ;
+
+argt = IDENTIFIER COLON type;
+
+//Blocs
+
+block = variable_declaration_part BEGIN statement_list END;
+
+//instruction
+
+statement_list = statement_list statement
+			   | statement
+			   ;
+
+statement = simple_statement
+		  | structured_statement
+		  ;
+
+simple_statement = assignment_statement
+				 | procedure_statement
+				 | new_statement
+				 | dispose_statement
+				 | println_statement
+				 | readln_statement
+				 | return_statement
+				 ;
+
+assignment_statement = variable_access EQUALS expresion SEMI ;
+
+procedure_statement = procedure_expression SEMI ;
+
+procedure_expression = IDENTIFIER LPAR expression_part RPAR ;
+
+expression_part = 
+				| expresion_list
+				;
+
+expresion_list = expresion_list COMMA expression
+			   | expression
+			   ;
+
+new_statement = NEW variable_access SEMI ;
+
+dispose_statement = DISPOSE variable_access SEMI ;
+
+println_statement = PRINTLN expression SEMI ;
+
+readln_statement = READLN expression SEMI;
+
+return_statement = RETURN expression SEMI ;
+
+structured_statement = block
+					 | if_statement
+					 | while_statement
+					 | switch_statement
+					 ;
+
+if_statement = IF expression THEN statement
+			 | IF expression THEN statement ELSE statement
+			 ;
+
+while_statement = WHILE expression DO statement;
+
+switch_statement = SWITCH expression BEGIN case_statement_list END;
+
+case_statement_list = case_statement_list case_statement
+					| case_statement
+					;
+
+case_statement = CASE IDENTIFIER COLON statement
+				| DEFAULT COLON statement
+				;
+
+
+// expressions
+
+variable_access = IDENTIFIER
+				| variable_access LBRA expression RBRA
+				| expression CARET
+				;
+
+expression = expression PLUS expression
+		   | expression MINUS expression
+		   | MINUS expression @UNARY_MINUS
+		   | expression TIMES expression
+		   | expression DIVIDE expression
+		   | expression OR expression          // OR = ||
+		   | expression AND expression         // AND = &&
+		   | NOT expression                    // NOT = !
+		   | expression LESS expression
+		   | expression LESS_EQ expression     // LESS_EQ = <=
+		   | expression MORE expression
+		   | expression MORE_EQ expression
+		   | expression LOGIC_EQ expression    // LOGIC_EQ =  ==
+		   | expression DIFFERENT expression   // DIFFERENT = !=
+		   | LPAR expression RPAR
+		   | procedure_expression
+		   | variable_access
+		   | literal
+		   ;
+
+// expresion litérales
+
+literal = INTEGER
+		| STRING
+		| TRUE               // 'true'
+		| FALSE              // 'false'
+		| NULL               // 'null'
+		;
