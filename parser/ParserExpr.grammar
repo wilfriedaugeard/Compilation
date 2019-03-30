@@ -22,7 +22,7 @@ static public class MyEvents extends beaver.Parser.Events {
 
 %terminals BEGIN, END, TYPE, EQUALS, SEMI;
 %terminals IDENTIFIER;
-%terminals STRING, INTEGER, BOOLEAN, LPAR, RPAR, DOT, ARRAY, LBRA, RBRA, OF, CARET, LBRACE, RBRACE, COMMA;
+%terminals STRING, INTEGER, BOOLEAN, LPAR, RPAR, DOT, ARRAY, LBRA, RBRA, OF, LBRACE, RBRACE, COMMA;
 %terminals VAR;
 %terminals PROCEDURE, FUNCTION, COLON;
 %terminals NEW, DISPOSE, PRINTLN, READLN, RETURN, IF, THEN, ELSE, WHILE, DO, SWITCH,CASE,DEFAULT;
@@ -30,7 +30,7 @@ static public class MyEvents extends beaver.Parser.Events {
 %terminals TRUE, FALSE, NULL;
 
 
-%right UNARY_MINUS;
+%right UNARY_MINUS, @UNARY_TIMES;
 %left TIMES, DIVIDE;
 %left PLUS, MINUS;
 
@@ -94,7 +94,7 @@ range_type = enumerated_type
 		   | named_type
 		   ;
 
-pointer_type = 	CARET type ;    // Caret = ^
+pointer_type = 	TIMES type @UNARY_TIMES;   
 
 structure_type = STRUCT LBRACE feature_list_type RBRACE;  // LBRACE RBRACE = {}
 
@@ -221,7 +221,7 @@ case_statement = CASE IDENTIFIER COLON statement
 
 variable_access = IDENTIFIER
 				| variable_access LBRA expression RBRA
-				| expression CARET
+				| TIMES expression @UNARY_TIMES
 				;
 
 expression = expression PLUS expression
