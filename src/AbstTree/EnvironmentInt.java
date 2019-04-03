@@ -1,4 +1,4 @@
-package tree;
+package AbstTree;
 
 public interface EnvironmentInt {
 	

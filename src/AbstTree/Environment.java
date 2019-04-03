@@ -1,4 +1,4 @@
-package tree;
+package AbstTree;
 import java.util.HashMap;
 import java.util.Map;
 
