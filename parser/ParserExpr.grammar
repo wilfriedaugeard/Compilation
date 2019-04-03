@@ -20,17 +20,28 @@ static public class MyEvents extends beaver.Parser.Events {
 	report = new MyEvents();
 :};
 
-%terminals BEGIN, END, TYPE, EQUALS, SEMI;
-%terminals IDENTIFIER;
-%terminals STRING, INTEGER, BOOLEAN, LPAR, RPAR, DOT, ARRAY, LBRA, RBRA, OF, LBRACE, RBRACE, COMMA;
-%terminals VAR;
-%terminals PROCEDURE, FUNCTION, COLON;
-%terminals NEW, DISPOSE, PRINTLN, READLN, RETURN, IF, THEN, ELSE, WHILE, DO, SWITCH,CASE,DEFAULT;
-%terminals PLUS, MINUS, TIMES, DIVIDE, OR, AND,LESS, MORE, LESS_EQ, MORE_EQ,DIFFERENT, LOGIC_EQ, NOT;
-%terminals TRUE, FALSE, NULL;
+
+//KEYWORD 
+%terminals TYPE,STRING,INTEGER,BOOLEAN,ARRAY, OF, STRUCT;
+%terminals VAR, PROCEDURE, FUNCTION, BEGIN, END, NEW, DISPOSE;
+%terminals PRINTLN, READLN, RETURN, IF, THEN ,ELSE, WHILE, DO;
+%terminals SWITCH, CASE, DEFAULT;
+
+//PONCTUATION
+%terminals SEMI, DOT, COLON, COMMA;
+%terminals LAPR, RPAR, LBRA, RBRA, LBRACE, RBRACE;
+
+//OPERATORS
+%terminals EQUALS,CIRC;
+%terminals  PLUS, MINUS, TIMES, DIVIDE;
+%terminals AND, OR, DIFFERENT,LOGIC_EQ;
+%terminals LESS, MORE, LESS_EQ, MORE_EQ,NOT;
+
+//LITERALS
+%terminals IDENTIFIER, TRUE, FALSE, NULL, LIT_INTEGER, LIT_STRING;
 
 
-%right UNARY_MINUS, @UNARY_TIMES;
+%right UNARY_MINUS;
 %left TIMES, DIVIDE;
 %left PLUS, MINUS;
 
@@ -57,7 +68,9 @@ type_declaration_list = type_declaration_list type_declaration
 					  | type_declaration
 					  ;
 
-type_declaration = IDENTIFIER EQUALS type SEMI  // SEMI = ;
+type_declaration = type_declaration_head EQUALS type SEMI  // SEMI = ;
+
+type_declaration_head = IDENTIFIER;
 
 
 // def de types
@@ -83,7 +96,7 @@ index_type = enumerated_type
 
 enumerated_type = LPAR identifier_list RPAR ;
 
-subrange_type = INTEGER DOT INTEGER  // DOT = .. (?) 
+subrange_type = INTEGER DOT INTEGER  // DOT = .. 
 			  | IDENTIFIER DOT IDENTIFIER
 			  ;
 
@@ -94,7 +107,7 @@ range_type = enumerated_type
 		   | named_type
 		   ;
 
-pointer_type = 	TIMES type @UNARY_TIMES;   
+pointer_type = 	CIRC type;   // CIRC = ^
 
 structure_type = STRUCT LBRACE feature_list_type RBRACE;  // LBRACE RBRACE = {}
 
@@ -221,7 +234,7 @@ case_statement = CASE IDENTIFIER COLON statement
 
 variable_access = IDENTIFIER
 				| variable_access LBRA expression RBRA
-				| TIMES expression @UNARY_TIMES
+				|  expression CIRC
 				;
 
 expression = expression PLUS expression
@@ -246,8 +259,8 @@ expression = expression PLUS expression
 
 // expresion litérales
 
-literal = INTEGER
-		| STRING
+literal = LIT_INTEGER
+		| LIT_STRING
 		| TRUE               // 'true'
 		| FALSE              // 'false'
 		| NULL               // 'null'
