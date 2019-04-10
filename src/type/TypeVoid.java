@@ -1,6 +1,6 @@
 package type;
 
-import ubordeaux.deptinfo.compilation.project.main.ClonableSymbol;
+import main.ClonableSymbol;
 
 public class TypeVoid extends TypeAtomic {
 

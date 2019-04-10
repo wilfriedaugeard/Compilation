@@ -1,6 +1,6 @@
 package node;
 
-import type.Type;
+import type.*;
 
 public abstract class NodeExp extends Node {
 

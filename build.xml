@@ -1,4 +1,5 @@
-<project name="td4" default="help">
+
+<project name="Projet LEA" default="help">
 
 	<target name="jflextask" unless="jflex.available" description="creates JFlex Ant task">
 		<taskdef name="jflex" classname="jflex.anttask.JFlexTask" classpath="lib/jflex-full-1.7.0.jar" />
@@ -42,18 +43,18 @@
 			<fileset dir="lib" includes="beaver-rt.jar" />
 			<fileset dir="lib" includes="jflex-full-1.7.0.jar" />
 		</path>
-		<java classname="ubordeaux.deptinfo.compilation.project.main.Main" classpath="bin" classpathref="beaverclasspath" output="data/output">
-			<arg value="data/testParser-1.lea" />
+		<java classname="main.Main" classpath="bin" classpathref="beaverclasspath" output="data/output">
+			<arg value="data/progr1.lea" />
 			<arg value="-checkType" />
-			<arg value="data/testType-1.lea" />
+			<arg value="data/progr2.lea" />
 		</java>
 	</target>
 
 	<target name="clean" description="remove compiled files">
 		<delete>
 			<fileset dir="src" includes="**/Parser.java,**/Scanner.java,**/Terminals.java" />
-			<fileset dir="bin" includes="**" excludes="" />
-			<fileset dir="data" includes="output" excludes="" />
+			<fileset dir="bin" includes="**" />
+			<fileset dir="data" includes="output" />
 		</delete>
 	</target>
 

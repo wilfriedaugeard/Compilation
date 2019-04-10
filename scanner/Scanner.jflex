@@ -1,9 +1,8 @@
 import beaver.Symbol;
 import beaver.Scanner;
-
 %%
 
-%class Scanner
+%class ScannerExp
 %extends Scanner
 %function nextToken
 %type Symbol

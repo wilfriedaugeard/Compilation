@@ -6,4 +6,5 @@ public abstract class ClonableSymbol extends Symbol {
 
         public abstract ClonableSymbol clone() ;
 
+	
 }

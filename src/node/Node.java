@@ -5,7 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import ubordeaux.deptinfo.compilation.project.main.ClonableSymbol;
+import main.*;
+import node.NodeInterface;
 
 public abstract class Node extends ClonableSymbol implements NodeInterface {
 

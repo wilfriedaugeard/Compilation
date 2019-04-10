@@ -1,23 +1,36 @@
-%import "abstTree.*";
+%package "main";
 %class "Parser";
+%import "node.*";
+%import "type.*";
+%import "environment.*";
+%import "java.util.ArrayList";
+%import "java.util.Iterator";
 
 %embed {: 
-
-static public class MyEvents extends beaver.Parser.Events {
-	Environment environment = new Environment();
-	
-	public void syntaxError(Symbol token) {
-		System.err.print("Erreur de syntaxe ligne ");
-		System.err.println(Symbol.getLine(token.getStart()));
-		System.err.print("Token inattendu: ");
-		System.err.println(Terminals.NAMES[token.getId()]);
+	static class Events extends beaver.Parser.Events {
+		public void syntaxError(Symbol token) {
+			System.err.format("*** Erreur de syntaxe en ligne %d, colonne %d. Token inattendu: %s\n",
+				Symbol.getLine(token.getStart()),
+				Symbol.getColumn(token.getStart()),
+				Terminals.NAMES[token.getId()]);
+		}
 	}
-};
+	
+	public void semanticError(String msg, Symbol token) {
+			System.err.format("*** " + msg + " ligne %d, colonne %d\n",
+				Symbol.getLine(token.getStart()),
+				Symbol.getColumn(token.getStart()));
+		}
+		
+	private Environment typeEnvironment = new Environment("types");
+	private Environment procedureEnvironment = new Environment("procedures");
+	private StackEnvironment stackEnvironment = new StackEnvironment("local variables stack");
+	private String type_declaration_name;
+	
+:};
 
-:} ;
-
-%init {:
-	report = new MyEvents();
+%init {: 
+	report = new Events();
 :};
 
 %terminals TYPE,STRING,INTEGER,BOOLEAN,ARRAY, OF, STRUCT;
@@ -39,7 +52,33 @@ static public class MyEvents extends beaver.Parser.Events {
 %left TIMES, DIVIDE;
 %left PLUS, MINUS;
 
+/***
+* A completer
+***/
 %goal program;
+
+/***
+* Semantique A completer
+*
+* Quelques astuces:
+*
+* a) ne mettez jamais de lettres accentuees, Beaver ne fonctionnerait pas
+*
+* b) quand vous souhaitez mettre du code avant la fin de la regle, 
+*     X= A {: je voudrais mettre du code ici :} B {: pour l'exploiter ici :}
+* utilisez une rege vide comme ceci:
+*
+*     X= A empty_X B {: pour l'exploiter ici  :} ;
+*     empty_X= {: je voudrais mettre du code ici :};
+*
+* c) pour implementer une liste, faites comme ceci:
+* xxx_list=
+*	xxx_list.list xxx.elt {: list.add(elt); return list; :}
+*	| xxx.elt {: MyList list = new MyList(); list.add(elt); return list; :}
+*	;
+*	
+*
+***/
 
 program = type_declaration_part
 		| variable_declaration_part

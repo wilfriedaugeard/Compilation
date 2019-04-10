@@ -1,5 +1,7 @@
 package type;
 
+import java.util.Vector;
+
 import main.ClonableSymbol;
 
 // Tout type qui compose d'autres types
