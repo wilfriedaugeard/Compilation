@@ -1,6 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.node;
+package node;
 
-import ubordeaux.deptinfo.compilation.project.type.Type;
+import type.Type;
 
 public final class NodeLiteral extends NodeExp {
 

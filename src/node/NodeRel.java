@@ -1,7 +1,7 @@
-package ubordeaux.deptinfo.compilation.project.node;
+package node;
 
-import ubordeaux.deptinfo.compilation.project.type.TypeBoolean;
-import ubordeaux.deptinfo.compilation.project.type.TypeInt;
+import type.TypeBoolean;
+import type.TypeInt;
 
 public class NodeRel extends NodeExp {
 

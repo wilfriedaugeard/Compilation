@@ -1,6 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
-import ubordeaux.deptinfo.compilation.project.main.ClonableSymbol;
+importClonableSymbol;
 
 public class TypeBoolean extends TypeAtomic {
 

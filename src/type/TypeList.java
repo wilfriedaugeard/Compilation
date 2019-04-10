@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
 // Type List(t)
 public class TypeList extends TypeComplex {

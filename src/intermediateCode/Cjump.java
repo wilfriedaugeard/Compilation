@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.intermediateCode;
+package intermediateCode;
 
 public class Cjump extends Stm {
 	private int relop;

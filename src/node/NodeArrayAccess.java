@@ -1,10 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.node;
+package node;
 
-import ubordeaux.deptinfo.compilation.project.type.TypeRange;
-import ubordeaux.deptinfo.compilation.project.type.TypeItemEnum;
-import ubordeaux.deptinfo.compilation.project.type.Type;
-import ubordeaux.deptinfo.compilation.project.type.TypeArray;
-import ubordeaux.deptinfo.compilation.project.type.TypeComplex;
+import type.*;
 
 public final class NodeArrayAccess extends NodeExp {
 

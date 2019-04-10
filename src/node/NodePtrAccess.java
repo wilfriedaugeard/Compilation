@@ -1,8 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.node;
+package node;
 
-import ubordeaux.deptinfo.compilation.project.type.Type;
-import ubordeaux.deptinfo.compilation.project.type.TypeComplex;
-import ubordeaux.deptinfo.compilation.project.type.TypePointer;
+import type.*;
 
 public final class NodePtrAccess extends NodeExp {
 

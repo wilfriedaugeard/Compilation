@@ -1,4 +1,5 @@
-	package ubordeaux.deptinfo.compilation.project.type;
+package type;
+
 
 // Type fonction arg -> ret
 public class TypeFunct extends TypeComplex {

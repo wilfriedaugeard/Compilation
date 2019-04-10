@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.intermediateCode;
+package intermediateCode;
 
 public class ExpList implements IntermediateCode {
 	private Exp head;

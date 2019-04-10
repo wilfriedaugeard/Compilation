@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.intermediateCode;
+package intermediateCode;
 
 public class Name extends Exp {
 	private LabelLocation label;

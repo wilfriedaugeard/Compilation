@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.intermediateCode;
+package intermediateCode;
 
 public abstract class Stm implements IntermediateCode {
 	public Stm() {

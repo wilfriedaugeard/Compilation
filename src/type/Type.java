@@ -1,6 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
-import ubordeaux.deptinfo.compilation.project.main.ClonableSymbol;
+import main.ClonableSymbol;
 
 // Expression de type
 public abstract class Type extends ClonableSymbol implements Comparable<Type>, TypeInterface {

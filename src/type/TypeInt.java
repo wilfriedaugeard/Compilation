@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
 // Type integer
 public final class TypeInt extends TypeAtomic {

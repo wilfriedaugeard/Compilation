@@ -1,6 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
-import ubordeaux.deptinfo.compilation.project.main.ClonableSymbol;
+import main.ClonableSymbol;
 
 public class TypeArray extends TypeComplex {
 

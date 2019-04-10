@@ -1,10 +1,8 @@
-package ubordeaux.deptinfo.compilation.project.node;
+package node;
 
 import java.util.Iterator;
 
-import ubordeaux.deptinfo.compilation.project.type.TypeFeature;
-import ubordeaux.deptinfo.compilation.project.type.TypeFunct;
-import ubordeaux.deptinfo.compilation.project.type.Type;
+import type.*;
 
 public final class NodeCallFct extends NodeExp {
 

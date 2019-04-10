@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
 import java.util.Iterator;
 import java.util.Vector;

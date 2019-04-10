@@ -1,6 +1,6 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
-import java.util.Vector;
+import main.ClonableSymbol;
 
 // Tout type qui compose d'autres types
 public abstract class TypeComplex extends Type {

@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.node;
+package node;
 
 public final class NodeDispose extends Node {
 

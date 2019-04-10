@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
 public class TypeItemEnum extends TypeAtomic {
 

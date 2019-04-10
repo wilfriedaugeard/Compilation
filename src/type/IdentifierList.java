@@ -1,4 +1,4 @@
-package ubordeaux.deptinfo.compilation.project.type;
+package type;
 
 import java.util.ArrayList;
 import java.util.Iterator;
