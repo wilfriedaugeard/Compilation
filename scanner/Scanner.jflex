@@ -81,7 +81,7 @@ Commentary 	= \/\*~(\*\/)|\/\/.*
 "true" 			{ return new Symbol(Terminals.TRUE, yyline, yycolumn); }
 "false" 		{ return new Symbol(Terminals.FALSE, yyline, yycolumn); }
 "null" 			{ return new Symbol(Terminals.NULL, yyline, yycolumn); }
-{Identifer} 	{ return new Symbol(Terminals.IDENTIFIER, yyline, yycolumn, yytext()); }
+{Identifier} 	{ return new Symbol(Terminals.IDENTIFIER, yyline, yycolumn, yytext()); }
 {Lit_Integer} 	{ return new Symbol(Terminals.LIT_INTEGER, yyline, yycolumn, yytext()); }
 {String} 		{ return new Symbol(Terminals.LIT_STRING, yyline, yycolumn, new String(yytext())); }
 

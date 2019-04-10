@@ -1,6 +1,6 @@
 package node;
 
-import Type;
+import type.Type;
 
 public final class NodeAssign extends Node {
 

@@ -1,6 +1,6 @@
 package type;
 
-importClonableSymbol;
+import main.ClonableSymbol;
 
 public class TypeBoolean extends TypeAtomic {
 
