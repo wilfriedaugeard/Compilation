@@ -1,3 +1,4 @@
+package main;
 import beaver.Symbol;
 import beaver.Scanner;
 %%
