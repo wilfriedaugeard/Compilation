@@ -26,12 +26,12 @@
 	</target>
 
 	<target name="scanner" depends="jflextask" description="generate scanner">
-		<jflex file="scanner/Scanner.jflex" destdir="src" nobak="yes" />
+		<jflex file="scanner/Scanner.jflex" destdir="src/main" nobak="yes" />
 	</target>
 
 	<target name="compile" depends="parser, scanner" description="compile all classes">
 		<mkdir dir="bin" />
-		<javac includeantruntime="false" srcdir="src" destdir="bin">
+		<javac includeantruntime="false" srcdir="src/main" destdir="bin">
 			<classpath>
 				<pathelement location="lib/beaver-rt.jar" />
 			</classpath>
@@ -52,7 +52,7 @@
 
 	<target name="clean" description="remove compiled files">
 		<delete>
-			<fileset dir="src" includes="**/Parser.java,**/Scanner.java,**/Terminals.java" />
+			<fileset dir="src/main" includes="**/Parser.java,**/Scanner.java,**/Terminals.java" />
 			<fileset dir="bin" includes="**" />
 			<fileset dir="data" includes="output" />
 		</delete>

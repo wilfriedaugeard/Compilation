@@ -12,7 +12,7 @@ public class Main {
 				if (arg.equals("-checkType"))
 					checksType = true;
 			} else {
-				Scanner input = new Scanner(new FileReader(arg));
+				ScannerExp input = new ScannerExp(new FileReader(arg));
 				Parser parser = new Parser();
 				try {
 					 System.err.println("*** Fichier " + arg);

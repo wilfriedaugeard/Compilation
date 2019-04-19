@@ -48,9 +48,10 @@
 
 %terminals IDENTIFIER, TRUE, FALSE, NULL, LIT_INTEGER, LIT_STRING;
 
-%right UNARY_MINUS;
+%right UNARY_MINUS,CIRC,NOT,IF,THEN;
 %left TIMES, DIVIDE;
 %left PLUS, MINUS;
+%left LESS, MORE, LESS_EQ, MORE_EQ,AND,OR,DIFFERENT,LOGIC_EQ;
 
 /***
 * A completer
@@ -88,8 +89,7 @@ program = type_declaration_part
 		| END
 		;
 
-type_declaration_part =
-					  | TYPE type_declaration_list
+type_declaration_part = TYPE type_declaration_list
 					  ;
 
 type_declaration_list = type_declaration_list type_declaration
@@ -150,8 +150,7 @@ feature_list_type = feature_list_type feature_type
 feature_type = IDENTIFIER COLON type SEMI
 			;
 					
-variable_declaration_part = 
-						  | VAR variable_declaration_list
+variable_declaration_part = VAR variable_declaration_list
 						  ;
 
 variable_declaration_list = variable_declaration_list variable_declaration

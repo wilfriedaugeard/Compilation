@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Environment implements EnvironmentInt {
+	protected String name;
 	
-	HashMap<String,Double> environmentHMap;
+	protected HashMap<String,Double> environmentHMap;
 	
-	public Environment() {
+	public Environment(String name) {
 		environmentHMap = new HashMap<String, Double>();
+		this.name = name;
 	}
 
 	@Override
