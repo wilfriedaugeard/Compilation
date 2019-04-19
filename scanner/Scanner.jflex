@@ -18,16 +18,17 @@ import beaver.Scanner;
 Identifier 	= [a-zA-Z_][a-zA-Z0-9_]*
 String 		= \"[^\"]*\"
 Integer 	= [0-9]+
-Hexa 		= 0x[0-9A-Fa-f]{1,6}
-Lit_Integer = {Hexa}|{Integer}
+Hexa 		= 0x[0-9A-Fa-f]{1,8}
 Decimal 	= ({Integer}(\.{Integer})?)|(\.{Integer})
+Lit_Integer = {Hexa}|{Integer}|{Decimal}
+
 Commentary 	= \/\*~(\*\/)|\/\/.*
 
 %%
 //KEYWORD
 "if"		{ return new Symbol(Terminals.IF ,yyline, yycolumn); }
 "else"		{ return new Symbol(Terminals.ELSE ,yyline, yycolumn); }
-"bool"		{ return new Symbol(Terminals.BOOLEAN ,yyline, yycolumn); }
+"boolean"	{ return new Symbol(Terminals.BOOLEAN ,yyline, yycolumn); }
 "case"		{ return new Symbol(Terminals.CASE ,yyline, yycolumn); }
 "default"	{ return new Symbol(Terminals.DEFAULT ,yyline, yycolumn); }
 "do"		{ return new Symbol(Terminals.DO ,yyline, yycolumn); }
@@ -47,6 +48,9 @@ Commentary 	= \/\*~(\*\/)|\/\/.*
 "function"	{ return new Symbol(Terminals.FUNCTION ,yyline, yycolumn); }
 "begin"		{ return new Symbol(Terminals.BEGIN ,yyline, yycolumn); }
 "end"		{ return new Symbol(Terminals.END ,yyline, yycolumn); }
+"integer"  	{ return new Symbol(Terminals.INTEGER ,yyline, yycolumn); }
+"string"  	{ return new Symbol(Terminals.STRING ,yyline, yycolumn); }
+
 
 //OPERATORS
 "="		{ return new Symbol(Terminals.EQUALS, yyline, yycolumn); }
@@ -86,6 +90,6 @@ Commentary 	= \/\*~(\*\/)|\/\/.*
 {String} 		{ return new Symbol(Terminals.LIT_STRING, yyline, yycolumn, new String(yytext())); }
 
 // COMMENTARY
-{Commentary} { System.out.println("côme-en-terre (la ville pas le truc au fond du jardiland): " + yytext()); }
+{Commentary} { }
 
 [^]|\n 		{}
