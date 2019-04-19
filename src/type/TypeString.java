@@ -2,9 +2,29 @@ package type;
 
 public final class TypeString extends TypeAtomic {
 
+	private String const_value;
+
+	public TypeString(String value) {
+		this();
+		this.const_value = value;
+	}
+
+	public TypeString() {
+		super();
+	}
+
 	@Override
 	public Type clone() {
-		return new TypeString();
+		return new TypeString(this.getConst_value());
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + '_' + getConst_value();
+	}
+
+	public String getConst_value() {
+		return const_value;
 	}
 
 }
