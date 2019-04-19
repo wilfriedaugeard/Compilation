@@ -54,10 +54,11 @@
 %left LESS, MORE, LESS_EQ, MORE_EQ,AND,OR,DIFFERENT,LOGIC_EQ;
 
 %typeof expression = "NodeExp";
-%typeof variable_access = "Node";
+%typeof IDENTIFIER = "String";
+%typeof variable_access = "NodeExp";
 %typeof LIT_INTEGER = "Integer";
 %typeof LIT_STRING = "String";
-%typeof literal = "Node";
+%typeof literal, case_statement, statement, case_statement_list = "Node";
 
 /***
 * A completer
@@ -269,7 +270,7 @@ case_statement = CASE IDENTIFIER.str COLON statement.s		{: return new NodeCase(s
 				;
 
 
-variable_access = IDENTIFIER									{: :}
+variable_access = IDENTIFIER.str								{: return new NodeId(str,new TypeList(new TypeString(str)));:}
 				| variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
 				|  expression.e CIRC							{: return new NodePtrAccess(e); :}
 				;
@@ -290,8 +291,8 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
 		   | expression.e DIFFERENT expression.f	{: return new NodeOp("!=",e,f); :}
 		   | LPAR expression.e RPAR					{: return e; :}
 		   | procedure_expression.e					{: return e; :}
-		   | variable_access.v						{: // pareil que literal :}
-		   | literal.l 								{: //j'pense faut ajouter dans un node ou dans une hashmap :}
+		   | variable_access.v						{: return v; :}
+		   | literal.l 								{: return l; :}
 		   ;
 
 literal = LIT_INTEGER.e 	{: return new NodeLiteral(new TypeInt(e), e); :}
