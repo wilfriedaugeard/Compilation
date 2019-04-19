@@ -54,11 +54,12 @@
 %left LESS, MORE, LESS_EQ, MORE_EQ,AND,OR,DIFFERENT,LOGIC_EQ;
 
 %typeof expression = "NodeExp";
-%typeof IDENTIFIER = "String";
+%typeof IDENTIFIER, STRING, INTEGER, BOOLEAN = "String";
 %typeof variable_access = "NodeExp";
 %typeof LIT_INTEGER = "Integer";
 %typeof LIT_STRING = "String";
-%typeof literal, case_statement, statement, case_statement_list = "Node";
+%typeof literal, case_statement, statement, case_statement_list, expresion_list, expression_part = "Node";
+%typeof type, type_declaration,simple_type, type_declaration_list,type_declaration_part, subrange_type , feature_list_type, structure_type, feature_type ="Type";
 
 /***
 * A completer
@@ -91,12 +92,12 @@
 program = type_declaration_part variable_declaration_part procedure_definition_part BEGIN statement_list END 
 			;
 
-type_declaration_part = 
-					| TYPE type_declaration_list
+type_declaration_part =   								{: return new TypeList(new TypeVoid()) ; :}
+					| TYPE type_declaration_list.list   {: return list ; :}
 					  ;
 
-type_declaration_list = type_declaration_list type_declaration
-					  | type_declaration
+type_declaration_list = type_declaration_list.list type_declaration.e	{: list.add(e); return list; :}
+					  | type_declaration.e 								{: TypeList list = new TypeList(); list.add(e); return list; :}
 					  ;
 
 type_declaration = type_declaration_head EQUALS type SEMI
@@ -105,74 +106,74 @@ type_declaration = type_declaration_head EQUALS type SEMI
 type_declaration_head = IDENTIFIER
 						;
 
-type = simple_type
-	 | named_type
-	 | index_type
-	 | array_type
-	 | pointer_type
-	 | structure_type
+type = simple_type.e 	{: return e; :}
+	 | named_type.e 	{: return e; :}
+	 | index_type.e 	{: return e; :}
+	 | array_type.e		{: return e; :}
+	 | pointer_type.e	{: return e; :}
+	 | structure_type.e	{: return e; :}
 	 ;
 
-simple_type = STRING
-			| INTEGER
-			| BOOLEAN	
+simple_type = STRING.e 		
+			| INTEGER.e 	
+			| BOOLEAN.e		
+			;
+			
+named_type = IDENTIFIER.e {: return new TypeNamed(e); :} 
 			;
 
-named_type = IDENTIFIER 
-			;
-
-index_type = enumerated_type
-		   | subrange_type
+index_type = enumerated_type.e 	{: return e; :}
+		   | subrange_type.e 	{: return e; :}
 		   ;
 
-enumerated_type = LPAR identifier_list RPAR 
+enumerated_type = LPAR identifier_list.e RPAR {: return e ; :}
 				;
 
-subrange_type = LIT_INTEGER DOT LIT_INTEGER
-			  | IDENTIFIER DOT IDENTIFIER
+subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{: new TypeArrayRange(e,f); :}
+			  | IDENTIFIER.e DOT IDENTIFIER.f		{: new TypeArrayRange(e,f); :}
 			  ;
 
 array_type = ARRAY LBRA range_type RBRA OF type	
 			;
 
-range_type = enumerated_type
-		   | subrange_type
-		   | named_type
+range_type = enumerated_type.e  {: return e ;:}
+		   | subrange_type.e  	{: return e ;:}
+		   | named_type.e  		{: return e ;:}
 		   ;
 
-pointer_type = 	CIRC type		
+pointer_type = 	CIRC type.e 	{: return new TypePointer(e) ; :}
 			;
 
-structure_type = STRUCT LBRACE feature_list_type RBRACE
+structure_type = STRUCT LBRACE feature_list_type.t RBRACE {: return new TypeStruct(t) ; :}
 				;
 
-feature_list_type = feature_list_type feature_type
-				  | feature_type
+feature_list_type = feature_list_type.list feature_type.e {:  list.add(e) ; return list;:}
+				  | feature_type.e 						  {: TypeFeatureList list = new TypeFeatureList(); list.add(e); return list; :}
 				  ;
 
 feature_type = IDENTIFIER COLON type SEMI
 			;
 					
-variable_declaration_part = 
-							| VAR variable_declaration_list
+variable_declaration_part =  {: return new NodeList(); :}
+							| VAR variable_declaration_list.list {: return list; :}
 						  ;
 
-variable_declaration_list = variable_declaration_list variable_declaration
-						  | variable_declaration
+variable_declaration_list = variable_declaration_list.list variable_declaration.e   {:  list.add(e) ; return list;:}
+						  | variable_declaration.e 									{: NodeList list = new NodeList(); list.add(e); return list; :}
 						  ;
 
-variable_declaration = identifier_list COLON type SEMI ;
+variable_declaration = identifier_list.list COLON type.e SEMI {:  list.add(e) ; return list;:} ;
 
-identifier_list = identifier_list COMMA IDENTIFIER
-				| IDENTIFIER
+identifier_list = identifier_list.list COMMA IDENTIFIER.e 	{:  list.add(e) ; return list;:}
+				| IDENTIFIER.e 								{: NodeList list = new NodeList(); list.add(e); return list; :}
 				;
 
 procedure_definition_part = 
-							| procedure_definition_list
+							| procedure_definition_list.list {: return list; :}
 							;
 
-procedure_definition_list = procedure_definition_list procedure_definition
-						  | procedure_definition
+procedure_definition_list = procedure_definition_list.list procedure_definition.e 	 {:  list.add(e) ; return list;:}
+						  | procedure_definition.e									 {: NodeList list = new NodeList(); list.add(e); return list; :}
 						  ;
 
 procedure_definition = procedure_definition_head block
@@ -183,51 +184,51 @@ procedure_definition_head = PROCEDURE IDENTIFIER LPAR argt_part RPAR
 						  | FUNCTION IDENTIFIER LPAR argt_part RPAR COLON type 
 						  ;
 
-argt_part = 
-		 | argt_list
+argt_part = {: return new NodeList(); :}
+		 | argt_list.list {: return list; :}
 		 ;
 
-argt_list = argt_list COMMA argt
-		  | argt
+argt_list = argt_list.list COMMA argt.e {:  list.add(e) ; return list;:}
+		  | argt.e {: NodeList list = new NodeList(); list.add(e); return list; :}
 		  ;
 
 argt = IDENTIFIER COLON type;
 
-block = variable_declaration_part BEGIN statement_list END
+block = variable_declaration_part BEGIN statement_list END 
 		;
 
-statement_list = statement_list statement
-			   | statement
+statement_list = statement_list.list statement.e {: list.add(e); return list; :}
+			   | statement.e {: NodeList list = new NodeList(); list.add(e) ; return list ; :} 
 			   ;
 
-statement = simple_statement
-		  | structured_statement
+statement = simple_statement.e		{: return e ; :}
+		  | structured_statement.e  {: return e ; :}
 		  ;
 
-simple_statement = assignment_statement
-				 | procedure_statement
-				 | new_statement
-				 | dispose_statement
-				 | println_statement
-				 | readln_statement
-				 | return_statement
+simple_statement = assignment_statement.e 	{: return e ; :}
+				 | procedure_statement.e 	{: return e ; :}
+				 | new_statement.e 			{: return e ; :}
+				 | dispose_statement.e 		{: return e ; :}
+				 | println_statement.e		{: return e ; :}
+				 | readln_statement.e 		{: return e ; :}
+				 | return_statement.e 		{: return e ; :}
 				 ;
 
 assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return new NodeAssign(e,f); :}
 					;
 
-procedure_statement = procedure_expression SEMI 
+procedure_statement = procedure_expression.e SEMI  {: return e ; :}
 					;
 
-procedure_expression = IDENTIFIER LPAR expression_part RPAR 
+procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: return new NodeCallFct(e,new TypeFunct(e, new TypeTuple(e.getType()), new TypeVoid()), list); :}
 					;
 
-expression_part = 
-				| expresion_list
+expression_part =  					  {: return new NodeList() ; :}
+				| expresion_list.list {: return list; :}
 				;
 
-expresion_list = expresion_list COMMA expression
-			   | expression
+expresion_list = expresion_list.list COMMA expression.e {: list.add(e); return list ; :}
+			   | expression.e 							{: NodeList list = new NodeList(); list.add(e); return list ; :}
 			   ;
 
 new_statement = NEW variable_access.v SEMI 			{: return new NodeNew(v); :}
@@ -236,19 +237,21 @@ new_statement = NEW variable_access.v SEMI 			{: return new NodeNew(v); :}
 dispose_statement = DISPOSE variable_access.v SEMI 	{: return new NodeDispose(v); :}
 				;
 
-println_statement = PRINTLN expression SEMI 
+println_statement = PRINTLN expression.e SEMI 		{: return new NodeCallFct("println", 
+					new TypeFunct("println", new TypeTuple(e.getType()), new TypeVoid()), new NodeList()); :}
 				;
 
-readln_statement = READLN expression SEMI
+readln_statement = READLN expression.e SEMI		{: return new NodeCallFct("readln", 
+					new TypeFunct("readln", new TypeTuple(e.getType()), new TypeVoid()), new NodeList()); :}	
 				;
 
 return_statement = RETURN expression.e SEMI 		{: return new NodeReturn(e); :}
 				;
 
-structured_statement = block
-					 | if_statement
-					 | while_statement
-					 | switch_statement
+structured_statement = block.e 				{: return e; :}
+					 | if_statement.e 		{: return e; :}
+					 | while_statement.e 	{: return e; :}
+					 | switch_statement.e 	{: return e; :}
 					 ;
 
 if_statement = IF expression.e THEN statement.s						{: return new NodeIf(e,s); :}
