@@ -89,8 +89,14 @@
 *
 ***/
 
-program = type_declaration_part variable_declaration_part procedure_definition_part BEGIN statement_list END 
-			;
+program = type_declaration_part 
+		variable_declaration_part 
+		procedure_definition_part 
+		BEGIN 
+		statement_list.l 
+		END 
+		{: return l; :}
+		;
 
 type_declaration_part =   								{: return new TypeList(new TypeVoid()) ; :}
 					| TYPE type_declaration_list.list   {: return list ; :}
