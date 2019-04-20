@@ -53,14 +53,16 @@
 %left PLUS, MINUS;
 %left LESS, MORE, LESS_EQ, MORE_EQ,AND,OR,DIFFERENT,LOGIC_EQ;
 
-%typeof expression = "NodeExp";
-%typeof IDENTIFIER, STRING, INTEGER, BOOLEAN = "String";
-%typeof variable_access = "NodeExp";
+%typeof IDENTIFIER, LIT_STRING, STRING, BOOLEAN, INTEGER = "String";
 %typeof LIT_INTEGER = "Integer";
-%typeof LIT_STRING = "String";
-%typeof literal, case_statement, statement, case_statement_list, expresion_list, expression_part, procedure_definition, procedure_definition_part, procedure_definition_list, procedure_definition_head = "Node";
-%typeof type, type_declaration, type_declaration_list,type_declaration_part, subrange_type, feature_list_type, structure_type, feature_type ="Type";
-%typeof type_declaration_head,simple_type, named_type,range_type ="TypeAtomic";
+%typeof expression, variable_access, procedure_expression = "NodeExp";
+%typeof expression_part, expresion_list, variable_declaration_list, procedure_definition_list, argt_list, statement_list, case_statement_list, case_statement = "NodeList";
+%typeof variable_declaration, procedure_definition, argt, statement = "Node";
+%typeof type_declaration, type, range_type, pointer_type, structure_type, feature_type = "Type";
+%typeof type_declaration_head = "TypeString";
+%typeof type_declaration_list, feature_list_type = "TypeList";
+%typeof identifier_list = "IdentifierList";
+
 /***
 * A completer
 ***/
@@ -86,7 +88,6 @@
 *	| xxx.elt {: MyList list = new MyList(); list.add(elt); return list; :}
 *	;
 *	
-*
 ***/
 
 program = type_declaration_part 
@@ -135,16 +136,16 @@ index_type = enumerated_type.e 	{: return e; :}
 enumerated_type = LPAR identifier_list.e RPAR {: return e ; :}
 				;
 
-subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{: new TypeArrayRange(new TypeInt(e),new TypeInt(f)); :}
-			  | IDENTIFIER.e DOT IDENTIFIER.f		{: new TypeArrayRange(new TypeString(e),new TypeString(f)); :}
+subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{: return new TypeArrayRange(new TypeInt(e),new TypeInt(f)); :}
+			  | IDENTIFIER.e DOT IDENTIFIER.f		{: return new TypeArrayRange(new TypeString(e),new TypeString(f)); :}
 			  ;
 
 array_type = ARRAY LBRA range_type.e RBRA OF type.f	{: return new TypeArray(e,f); :}	
 			;
 
-range_type = enumerated_type.e  {: return e ;:}
-		   | subrange_type.e  	{: return e ;:}
-		   | named_type.e  		{: return e ;:}
+range_type = enumerated_type.e  {: return e ; :}
+		   | subrange_type.e  	{: return e ; :}
+		   | named_type.e  		{: return e ; :}
 		   ;
 
 pointer_type = 	CIRC type.e 	{: return new TypePointer(e) ; :}
@@ -168,18 +169,24 @@ variable_declaration_list = variable_declaration_list.list variable_declaration.
 						  | variable_declaration.e 									{: return new NodeList(e);  :}
 						  ;
 
-variable_declaration = identifier_list.list COLON type.e SEMI {:  list.add(e) ; return list;:} ;
+variable_declaration = identifier_list.list COLON type.e SEMI {: 
+	NodeList nl = new NodeList();
+	for (String id : list) {
+		nl.add(new NodeId(id, e));
+	}
+	return nl;	
+ :} ;
 
-identifier_list = identifier_list.list COMMA IDENTIFIER.e 	{:  list.add(e) ; return list;:}
-				| IDENTIFIER.e 								{: NodeList list = new NodeList(); list.add(e); return list; :}
+identifier_list = identifier_list.list COMMA IDENTIFIER.e 	{: list.add(e) ; return list; :}
+				| IDENTIFIER.e 								{: return new IdentifierList(e); :}
 				;
 
 procedure_definition_part = 									{: return new NodeList(); :}
 							| procedure_definition_list.list 	{: return list; :}
 							;
 
-procedure_definition_list = procedure_definition_list.list procedure_definition.e 	 {:  list.add(e) ; return list;:}
-						  | procedure_definition.e									 {: NodeList list = new NodeList(); list.add(e); return list; :}
+procedure_definition_list = procedure_definition_list.list procedure_definition.e 	 {: list.add(e); return list; :}
+						  | procedure_definition.e									 {: return new NodeList(e); :}
 						  ;
 
 procedure_definition = procedure_definition_head block
@@ -194,8 +201,8 @@ argt_part = 						{: return new NodeList(); :}
 		 | argt_list.list 			{: return list; :}
 		 ;
 
-argt_list = argt_list.list COMMA argt.e 		{:  list.add(e) ; return list;:}
-		  | argt.e 								{: NodeList list = new NodeList(); list.add(e); return list; :}
+argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
+		  | argt.e 								{: return new NodeList(e); :}
 		  ;
 
 argt = IDENTIFIER COLON type;
@@ -204,11 +211,11 @@ block = variable_declaration_part BEGIN statement_list END
 		;
 
 statement_list = statement_list.list statement.e 	{: list.add(e); return list; :}
-			   | statement.e 						{: NodeList list = new NodeList(); list.add(e) ; return list ; :} 
+			   | statement.e 						{: return new NodeList(e); :} 
 			   ;
 
-statement = simple_statement.e		{: return e ; :}
-		  | structured_statement.e  {: return e ; :}
+statement = simple_statement.e		{: return e; :}
+		  | structured_statement.e  {: return e; :}
 		  ;
 
 simple_statement = assignment_statement.e 	{: return e ; :}
@@ -226,7 +233,7 @@ assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return ne
 procedure_statement = procedure_expression.e SEMI  {: return e ; :}
 					;
 
-procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: return new NodeCallFct(e,new TypeFunct(e, new TypeTuple(e.getType()), new TypeVoid()), list); :}
+procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: return new NodeCallFct(e, new TypeFunct(e, new TypeTuple(), new TypeVoid()), list); :}
 					;
 
 expression_part =  					  {: return new NodeList() ; :}

@@ -6,3 +6,5 @@ src/main/ScannerExp\.java
 src/main/Terminals\.java
 
 bin/
+
+data/output
