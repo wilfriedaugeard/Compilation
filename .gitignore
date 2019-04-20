@@ -8,3 +8,5 @@ src/main/Terminals\.java
 bin/
 
 data/output
+
+build\.xml
