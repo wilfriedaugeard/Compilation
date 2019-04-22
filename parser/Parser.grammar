@@ -218,13 +218,13 @@ statement = simple_statement.e		{: return e; :}
 		  | structured_statement.e  {: return e; :}
 		  ;
 
-simple_statement = assignment_statement.e 	{: return e ; :}
-				 | procedure_statement.e 	{: return e ; :}
-				 | new_statement.e 			{: return e ; :}
-				 | dispose_statement.e 		{: return e ; :}
-				 | println_statement.e		{: return e ; :}
-				 | readln_statement.e 		{: return e ; :}
-				 | return_statement.e 		{: return e ; :}
+simple_statement = assignment_statement.e 	{: return e; :}
+				 | procedure_statement.e 	{: return e; :}
+				 | new_statement.e 			{: return e; :}
+				 | dispose_statement.e 		{: return e; :}
+				 | println_statement.e		{: return e; :}
+				 | readln_statement.e 		{: return e; :}
+				 | return_statement.e 		{: return e; :}
 				 ;
 
 assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return new NodeAssign(e,f); :}
@@ -232,7 +232,6 @@ assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return ne
 
 procedure_statement = procedure_expression.e SEMI  {: return e ; :}
 					;
-
 procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: return new NodeCallFct(e, new TypeFunct(e, new TypeTuple(), new TypeVoid()), list); :}
 					;
 
@@ -286,7 +285,7 @@ case_statement = CASE IDENTIFIER.str COLON statement.s		{: return new NodeCase(s
 				;
 
 
-variable_access = IDENTIFIER.str								{: return new NodeId(str,new TypeList(new TypeString(str)));:}
+variable_access = IDENTIFIER.str								{: return new NodeId(str,new TypeList(new TypeString(str))); :}
 				| variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
 				|  expression.e CIRC							{: return new NodePtrAccess(e); :}
 				;

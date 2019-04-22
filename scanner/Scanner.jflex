@@ -46,6 +46,7 @@ Commentary 	= \/\*~(\*\/)|\/\/.*
 "var"		{ System.out.println("*** var"); return new Symbol(Terminals.VAR ,yyline, yycolumn); }
 "procedure"	{ System.out.println("*** procedure"); return new Symbol(Terminals.PROCEDURE ,yyline, yycolumn); }
 "function"	{ System.out.println("*** function"); return new Symbol(Terminals.FUNCTION ,yyline, yycolumn); }
+"then" 		{ System.out.println("*** then"); return new Symbol(Terminals.THEN, yyline, yycolumn); }
 "begin"		{ System.out.println("*** begin"); return new Symbol(Terminals.BEGIN ,yyline, yycolumn); }
 "end"		{ System.out.println("*** end"); return new Symbol(Terminals.END ,yyline, yycolumn); }
 "integer"  	{ System.out.println("*** integer"); return new Symbol(Terminals.INTEGER ,yyline, yycolumn); }
