@@ -3,10 +3,10 @@ package environment;
 public interface EnvironmentInt {
 	
 	// Ajoute une variable à l'environement
-	void putVariable(String var, Double value);
+	void putVariable(String var, Object value);
 
 	// Retrouve une variable d'un environnement
-	Double getVariableValue(String variable);
+	Object getVariableValue(String variable);
 	
 
 }

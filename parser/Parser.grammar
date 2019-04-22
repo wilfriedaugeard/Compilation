@@ -96,7 +96,7 @@ program = type_declaration_part
 		BEGIN 
 		statement_list.l 
 		END 
-		{: return l; :}
+		{: System.out.println(typeEnvironment.toString()+"\n");return l; :}
 		;
 
 type_declaration_part =   								{: return new TypeList(new TypeVoid()) ; :}
@@ -121,9 +121,9 @@ type = simple_type.e 	{: return e; :}
 	 | structure_type.e	{: return e; :}
 	 ;
 
-simple_type = STRING 		{: return new TypeString("string"); :}
-			| INTEGER 		{: return new TypeString("integer"); :}
-			| BOOLEAN		{: return new TypeString("boolean"); :}
+simple_type = STRING 		{: return new TypeString(); :}
+			| INTEGER 		{: return new TypeInt(); :}
+			| BOOLEAN		{: return new TypeBoolean(); :}
 			;
 			
 named_type = IDENTIFIER.e {: return new TypeNamed(e); :} 
@@ -173,6 +173,7 @@ variable_declaration = identifier_list.list COLON type.e SEMI {:
 	NodeList nl = new NodeList();
 	for (String id : list) {
 		nl.add(new NodeId(id, e));
+		typeEnvironment.putVariable(id,e); 
 	}
 	return nl;	
  :} ;
@@ -227,7 +228,7 @@ simple_statement = assignment_statement.e 	{: return e; :}
 				 | return_statement.e 		{: return e; :}
 				 ;
 
-assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return new NodeAssign(e,f); :}
+assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: System.out.println(e.getType()); return new NodeAssign(e,f); :}
 					;
 
 procedure_statement = procedure_expression.e SEMI  {: return e ; :}

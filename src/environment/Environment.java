@@ -6,21 +6,25 @@ import java.util.Map;
 public class Environment implements EnvironmentInt {
 	protected String name;
 	
-	protected HashMap<String,Double> environmentHMap;
+	protected HashMap<String,Object> environmentHMap;
 	
 	public Environment(String name) {
-		environmentHMap = new HashMap<String, Double>();
+		environmentHMap = new HashMap<String, Object>();
 		this.name = name;
 	}
 
 	@Override
-	public void putVariable(String var, Double value) {
+	public void putVariable(String var, Object value) {
 		environmentHMap.put(var, value);
 	}
 
 	@Override
-	public Double getVariableValue(String variable) {
+	public Object getVariableValue(String variable) {
 		return environmentHMap.get(variable);
+	}
+	
+	public String toString(){
+		return environmentHMap.toString();
 	}
 
 	// Implémenter la classe pour gérer un environnement
