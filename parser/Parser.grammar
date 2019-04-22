@@ -206,7 +206,7 @@ argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
 		  | argt.e 								{: return new NodeList(e); :}
 		  ;
 
-argt = IDENTIFIER COLON type;
+argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :};
 
 block = variable_declaration_part BEGIN statement_list END 
 		;
