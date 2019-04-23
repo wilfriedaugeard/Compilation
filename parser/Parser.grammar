@@ -99,7 +99,7 @@ program = type_declaration_part
 		{: System.out.println(typeEnvironment.toString()+"\n"); return l; :}
 		;
 
-type_declaration_part =   								{: return new TypeList(new TypeVoid()) ; :}
+type_declaration_part =
 					| TYPE type_declaration_list.list   {: return list ; :}
 					  ;
 
@@ -161,7 +161,7 @@ feature_list_type = feature_list_type.list feature_type.e {:  list.add(e) ; retu
 feature_type = IDENTIFIER.str COLON type.t SEMI		{: return new TypeFeature(str,t); :}
 			;
 					
-variable_declaration_part =  										{: return new NodeList(); :}
+variable_declaration_part = 
 							| VAR variable_declaration_list.list 	{: return list; :}
 						  ;
 
@@ -182,7 +182,7 @@ identifier_list = identifier_list.list COMMA IDENTIFIER.e 	{: list.add(e) ; retu
 				| IDENTIFIER.e 								{: return new IdentifierList(e); :}
 				;
 
-procedure_definition_part = 									{: return new NodeList(); :}
+procedure_definition_part =
 							| procedure_definition_list.list 	{: return list; :}
 							;
 
@@ -233,7 +233,13 @@ assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return ne
 
 procedure_statement = procedure_expression.e SEMI  {: return e ; :}
 					;
-procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: return new NodeCallFct(e, new TypeFunct(e, new TypeTuple(), new TypeVoid()), list); :}
+
+procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: 
+						//TypeFeature tmp = new TypeFeature(e, e.getType());
+						//TODO:
+						return new NodeCallFct(e, 
+							new TypeFunct(e, new TypeTuple(), new TypeVoid()), new NodeList(list));
+					:}
 					;
 
 expression_part =  
@@ -252,6 +258,7 @@ dispose_statement = DISPOSE variable_access.v SEMI 	{: return new NodeDispose(v)
 
 println_statement = PRINTLN expression.e SEMI 		{: 
 				TypeFeature tmp = new TypeFeature("println", e.getType());
+				//FIXME: faire println pour une fonction en parametre
 				return new NodeCallFct("println", 
 					new TypeFunct("println", new TypeTuple(tmp), new TypeVoid()), new NodeList(e)); :}
 				;
@@ -316,7 +323,7 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
 		   | literal.l 								{: return l; :}
 		   ;
 
-literal = LIT_INTEGER.e 	{: return new NodeLiteral(new TypeInt(e), e); :}
+literal = LIT_INTEGER.e 	{: System.out.println(e); return new NodeLiteral(new TypeInt(e), e); :}
 		| LIT_STRING.e 		{: return new NodeLiteral(new TypeString(e), e); :}
 		| TRUE 				{: return new NodeLiteral(new TypeBoolean(true), true); :}
 		| FALSE 			{: return new NodeLiteral(new TypeBoolean(false), false); :}
