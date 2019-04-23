@@ -14,6 +14,10 @@ public class TypeBoolean extends TypeAtomic {
 	public TypeBoolean() {
 		super();
 	}
+	
+	public void putValue(Boolean val) {
+		this.const_value=val;
+	}
 
 	@Override
 	public ClonableSymbol clone() {

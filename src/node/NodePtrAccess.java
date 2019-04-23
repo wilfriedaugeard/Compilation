@@ -4,6 +4,8 @@ import type.*;
 
 public final class NodePtrAccess extends NodeExp {
 
+	private String name;
+	
 	// e = NodeExp(TypePointer(\tau))
 	public NodePtrAccess(NodeExp e) {
 		super(e);
@@ -15,6 +17,7 @@ public final class NodePtrAccess extends NodeExp {
 					this.type = tr;
 			}
 		}
+		this.name=e.getName();
 	}
 
 	@Override
@@ -28,6 +31,11 @@ public final class NodePtrAccess extends NodeExp {
 	@Override
 	public NodePtrAccess clone() {
 		return new NodePtrAccess((NodeExp) this.get(0).clone());
+	}
+	
+	@Override
+	public String getName() {
+		return this.name;
 	}
 
 }

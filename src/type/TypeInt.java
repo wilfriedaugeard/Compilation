@@ -13,6 +13,10 @@ public final class TypeInt extends TypeAtomic {
 	public TypeInt() {
 		super();
 	}
+	
+	public void putValue(Integer val) {
+		this.const_value=val;
+	}
 
 	@Override
 	public Type clone() {

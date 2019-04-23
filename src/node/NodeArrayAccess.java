@@ -3,12 +3,13 @@ package node;
 import type.*;
 
 public final class NodeArrayAccess extends NodeExp {
-
+	private String name;
 	// t [i]
 	public NodeArrayAccess(NodeExp t, Node i) {
 		super(t, i);
 		if ((t!=null) && (((TypeComplex) t.type).size() == 2))
 			type = ((TypeComplex) t.type).get(1);
+		this.name = t.getName();
 	}
 
 	@Override
@@ -46,5 +47,11 @@ public final class NodeArrayAccess extends NodeExp {
 	public NodeArrayAccess clone() {
 		return new NodeArrayAccess((NodeExp) get(0).clone(), (Node) get(1).clone());
 	}
+	
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
 
 }

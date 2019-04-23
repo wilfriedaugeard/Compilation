@@ -298,6 +298,7 @@ case_statement = CASE IDENTIFIER.str COLON statement.s		{: return new NodeCase(s
 				;
 
 
+
 variable_access = IDENTIFIER.str								{: return new NodeId(str, typeEnvironment.getVariableValue(str)); :}
 				| variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
 				|  expression.e CIRC							{: return new NodePtrAccess(e); :}
