@@ -55,6 +55,10 @@ public final class NodeCallFct extends NodeExp {
 				break;
 			}
 		}
+
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+		if (result) System.out.println("success");
+		else 	System.out.println("faillure");
 		// Plus ou moins d'arguments que de paramètres
 		if (result && (itArgs.hasNext() || itParams.hasNext())) {
 			System.err.println("*** Erreur de typage: pas le même nombre de paramètres ");

@@ -1,12 +1,14 @@
 package environment;
 
+import type.*;
+
 public interface EnvironmentInt {
 	
 	// Ajoute une variable à l'environement
-	void putVariable(String var, Object value);
+	void putVariable(String var, Type value);
 
 	// Retrouve une variable d'un environnement
-	Object getVariableValue(String variable);
+	Type getVariableValue(String variable);
 	
 
 }

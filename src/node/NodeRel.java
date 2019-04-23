@@ -18,8 +18,12 @@ public class NodeRel extends NodeExp {
 	@Override
 	public boolean checksType() {
 		super.checksType();
-		if ((!(this.getOp1().getType() instanceof TypeInt)) || (!(this.getOp2().getType() instanceof TypeInt)))
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+		if ((!(this.getOp1().getType() instanceof TypeInt)) || (!(this.getOp2().getType() instanceof TypeInt))) {
+			System.out.println("faillure");
 			return false;
+		}
+		System.out.println("success");
 		return true;
 	}
 

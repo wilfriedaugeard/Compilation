@@ -22,6 +22,9 @@ public final class NodeList extends Node {
 				break;
 			}
 		}
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+		if (result) System.out.println("success");
+		else 	System.out.println("faillure");
 		return result;
 	}
 

@@ -9,6 +9,8 @@ public final class NodeNew extends Node {
 	@Override
 	public boolean checksType() {
 		super.checksType();
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+		System.out.println("success");
 		return true;
 	}
 
