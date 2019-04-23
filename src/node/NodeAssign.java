@@ -11,16 +11,29 @@ public final class NodeAssign extends Node {
 	@Override
 	public boolean checksType() {
 		super.checksType();
-		if (!get(0).checksType())
+		if (!get(0).checksType())  {
+			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+			System.out.println("faillure 1");
 			return false;
-		if (!get(1).checksType())
+		}
+		if (!get(1).checksType()) {
+			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+			System.out.println("faillure 2");
 			return false;
+		}
 		Type lhsType = this.getLhs().getType();
 		Type rhsType = this.getRhs().getType();
-		if (lhsType == null || rhsType == null || !lhsType.equals(rhsType))
+		if (lhsType == null || rhsType == null || !lhsType.equals(rhsType)) {
+			System.out.println("--lhs " + lhsType + " --rhs " + rhsType);
+			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+			System.out.println("faillure 3");
 			return false;
-		else
+		}
+		else {
+			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+			System.out.println("success");
 			return true;
+		}
 	}
 
 	private NodeExp getLhs() {

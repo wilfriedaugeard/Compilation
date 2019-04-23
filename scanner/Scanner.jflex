@@ -88,7 +88,7 @@ Commentary 	= \/\*~(\*\/)|\/\/.*
 "null" 			{ System.out.println("*** null"); return new Symbol(Terminals.NULL, yyline, yycolumn); }
 {Identifier} 	{ System.out.println("*** ID : " + yytext()); return new Symbol(Terminals.IDENTIFIER, yyline, yycolumn, yytext()); }
 {Integer}		{ System.out.println("*** INT : " + yytext()); return new Symbol(Terminals.LIT_INTEGER, yyline, yycolumn, new Integer(yytext())); }
-{Hexa} 	        { System.out.println("*** HEXA : " + yytext()); return new Symbol(Terminals.LIT_INTEGER, yyline, yycolumn, new Integer(Integer.parseInt(yytext().substring(2),16 ))); }
+{Hexa} 	        { System.out.println("*** HEXA : " + yytext()); return new Symbol(Terminals.LIT_INTEGER, yyline, yycolumn, new Integer(Integer.decode(yytext()))); }
 {String} 		{ System.out.println("*** STR : " + yytext()); return new Symbol(Terminals.LIT_STRING, yyline, yycolumn, new String(yytext())); }
 
 // COMMENTARY

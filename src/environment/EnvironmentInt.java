@@ -1,6 +1,8 @@
 package environment;
 import type.*; 
 
+import type.*;
+
 public interface EnvironmentInt {
 	
 	// Ajoute une variable à l'environement

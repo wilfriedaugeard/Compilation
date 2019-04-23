@@ -23,6 +23,8 @@ public final class NodePtrAccess extends NodeExp {
 	@Override
 	public boolean checksType() {
 		super.checksType();
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+		System.out.println("success");
 		return true;
 	}
 

@@ -24,6 +24,8 @@ public final class NodeId extends NodeExp {
 	@Override
 	public boolean checksType() {
 		super.checksType();
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+		System.out.println("success");
 		return true;
 	}
 
