@@ -200,7 +200,7 @@ procedure_definition_head = PROCEDURE IDENTIFIER.id LPAR argt_part.args RPAR {:
                                 while (i.hasNext()) {
                                     NodeId n = (NodeId) i.next();
                                     Type t = n.getType();
-                                    tt.add(new TypeFeature(id, new TypeVoid()));
+                                    tt.add(new TypeFeature(id, t));
                                 }
                                 TypeFunct tf = new TypeFunct(id, tt, new TypeVoid());
                                 procedureEnvironment.putVariable(id, tf);
@@ -345,7 +345,7 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
            | literal.l 								{: return l; :}
            ;
 
-literal = LIT_INTEGER.e 	{: System.out.println("$$$$$ " + e); return new NodeLiteral(new TypeInt(e), e); :}
+literal = LIT_INTEGER.e 	{: return new NodeLiteral(new TypeInt(e), e); :}
         | LIT_STRING.e 		{: return new NodeLiteral(new TypeString(e), e); :}
         | TRUE 				{: return new NodeLiteral(new TypeBoolean(true), true); :}
         | FALSE 			{: return new NodeLiteral(new TypeBoolean(false), false); :}
