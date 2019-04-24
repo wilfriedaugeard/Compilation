@@ -1,10 +1,11 @@
 package type;
 
 import main.ClonableSymbol;
+
 public class TypeEnumRange extends TypeRange {
 
-	private String name;
 	private static int uniqName;
+	private String name;
 	
 	public TypeEnumRange(TypeItemEnum min, TypeItemEnum max) {
 		super(min, max);

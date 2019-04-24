@@ -22,9 +22,9 @@
                 Symbol.getColumn(token.getStart()));
         }
         
-    private Environment typeEnvironment = new Environment("types");
-    private Environment procedureEnvironment = new Environment("procedures");
-    private StackEnvironment stackEnvironment = new StackEnvironment("local variables stack");
+    private Environment typeEnvironment         = new Environment("types");
+    private Environment procedureEnvironment    = new Environment("procedures");
+    private StackEnvironment stackEnvironment   = new StackEnvironment("local variables stack");
     private String type_declaration_name;
     
 :};
@@ -107,7 +107,7 @@ type_declaration_list = type_declaration_list.list type_declaration.e	{: list.ad
                       | type_declaration.e 								{: return new TypeList(e); :}
                       ;
 
-type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: return new TypeFeature(e.getConst_value(),f); :}
+type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: typeEnvironment.putVariable(e.getConst_value(), f); return new TypeFeature(e.getConst_value(),f); :}
                 ;
 
 type_declaration_head = IDENTIFIER.e	{: return new TypeString(e); :}
@@ -133,14 +133,44 @@ index_type = enumerated_type.e 	{: return e; :}
            | subrange_type.e 	{: return e; :}
            ;
 
-enumerated_type = LPAR identifier_list.e RPAR {: return e ; :}
+enumerated_type = LPAR identifier_list.e RPAR {:
+                    int cpt = 0;
+                    Iterator<String> it = e.iterator();
+                    TypeEnumRange ter = new TypeEnumRange();
+                    while (it.hasNext()) {
+                        String str = it.next();
+                        TypeItemEnum tie = new TypeItemEnum(cpt, str);
+                        typeEnvironment.putVariable(str, tie);
+                        if (str == e.first()) ter.setFirst(tie);
+                        if (str == e.last()) ter.setLast(tie);
+                        cpt++;
+                    }
+                    return ter;
+                :}
                 ;
 
 subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{: return new TypeArrayRange(new TypeInt(e),new TypeInt(f)); :}
-              | IDENTIFIER.e DOT IDENTIFIER.f		{: return new TypeArrayRange(new TypeString(e),new TypeString(f)); :}
+              | IDENTIFIER.e DOT IDENTIFIER.f		{:
+                    Type te = typeEnvironment.getVariableValue(e);
+                    Type tf = typeEnvironment.getVariableValue(f);
+                    if (te instanceof TypeItemEnum && tf instanceof TypeItemEnum) {
+                        TypeItemEnum tiee = (TypeItemEnum) te;
+                        TypeItemEnum tief = (TypeItemEnum) tf;
+                        TypeInt int_e = new TypeInt(tiee.getConst_value());
+                        TypeInt int_f = new TypeInt(tief.getConst_value());
+                        return new TypeArrayRange(int_e, int_f); 
+                    }
+                    System.out.println("&& 156 te : " + te + "\ntf : " + tf); 
+                    return new TypeArrayRange(new TypeString(e), new TypeString(f));
+                :}
               ;
 
-array_type = ARRAY LBRA range_type.e RBRA OF type.f	{: return new TypeArray(e,f); :}	
+array_type = ARRAY LBRA range_type.e RBRA OF type.f	{:
+                //TODO:
+                TypeArray ta = new TypeArray(e, f);
+                System.out.println("&& 159 - ta : " + ta);
+                return ta; 
+            :}	
             ;
 
 range_type = enumerated_type.e  {: return e ; :}
@@ -170,6 +200,7 @@ variable_declaration_list = variable_declaration_list.list variable_declaration.
                           ;
 
 variable_declaration = identifier_list.list COLON type.e SEMI {: 
+    //TODO: verification typage : si != null et var.type == e
     NodeList nl = new NodeList();
     for (String id : list) {
         nl.add(new NodeId(id, e));
@@ -279,14 +310,13 @@ dispose_statement = DISPOSE variable_access.v SEMI 	{: return new NodeDispose(v)
 
 println_statement = PRINTLN expression.e SEMI 		{: 
                 TypeFeature tmp = new TypeFeature("println", e.getType());
-                //FIXME: faire println pour une fonction en parametre
                 return new NodeCallFct("println", 
                     new TypeFunct("println", new TypeTuple(tmp), new TypeVoid()), new NodeList(e)); :}
                 ;
 
 readln_statement = READLN expression.e SEMI		{: 
                 TypeFeature tmp = new TypeFeature("readln", e.getType());
-                //FIXME: regarder si TypeVoid() est le bon type de retour
+                //TODO: regarder si TypeVoid() est le bon type de retour
                 return new NodeCallFct("readln", 
                     new TypeFunct("readln", new TypeTuple(tmp), new TypeVoid()), new NodeList(e)); :}	
                 ;
@@ -320,7 +350,16 @@ case_statement = CASE IDENTIFIER.str COLON statement.s		{: return new NodeCase(s
 
 
 
-variable_access = IDENTIFIER.str								{: return new NodeId(str, typeEnvironment.getVariableValue(str)); :}
+variable_access = IDENTIFIER.str								{:  Type t = typeEnvironment.getVariableValue(str);
+                                                                    if (t instanceof TypeItemEnum) {
+                                                                        System.out.println("&& 355 t : " + t);
+                                                                        TypeItemEnum tie = (TypeItemEnum) t;
+                                                                        int x = tie.getConst_value();
+                                                                        TypeInt ti = new TypeInt(x);
+                                                                        return new NodeId(str, ti);
+                                                                    }
+                                                                    return new NodeId(str, typeEnvironment.getVariableValue(str)); 
+                                                                :}
                 | variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
                 |  expression.e CIRC							{: return new NodePtrAccess(e); :}
                 ;
