@@ -12,10 +12,6 @@ public final class TypeString extends TypeAtomic {
 	public TypeString() {
 		super();
 	}
-	
-	public void putValue(String val) {
-		this.const_value=val;
-	}
 
 	@Override
 	public Type clone() {

@@ -5,6 +5,7 @@
 %import "environment.*";
 %import "java.util.ArrayList";
 %import "java.util.Iterator";
+%import "java.util.HashMap";
 
 %embed {: 
     static class Events extends beaver.Parser.Events {
@@ -26,6 +27,7 @@
     private Environment procedureEnvironment = new Environment("procedures");
     private StackEnvironment stackEnvironment = new StackEnvironment("local variables stack");
     private String type_declaration_name;
+    private boolean local = false;
     
 :};
 
@@ -94,10 +96,14 @@ program = type_declaration_part
         variable_declaration_part 
         procedure_definition_part 
         BEGIN 
+        empty_rule_program
         statement_list.l 
         END 
         {: System.out.println(typeEnvironment.toString()+"\n"); return l; :}
         ;
+        
+empty_rule_program = {: local = true; return null; :}
+					;
 
 type_declaration_part =
                     | TYPE type_declaration_list.list   {: return list ; :}
@@ -231,8 +237,14 @@ argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
 
 argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :};
 
-block = variable_declaration_part BEGIN statement_list.l END {: return l; :} 
+block = empty_rule_block_begin variable_declaration_part BEGIN statement_list.l empty_rule_block_end END {: return l; :} 
         ;
+        
+empty_rule_block_begin = {: System.out.println("!!!!!!!!!!!!!!!"); stackEnvironment.push(new HashMap<String, Type>()); return null; :} 
+			;
+			
+empty_rule_block_end = {: stackEnvironment.pop(); return null; :}
+				;
 
 statement_list = statement_list.list statement.e 	{: list.add(e); return list; :}
                | statement.e 						{: return new NodeList(e); :} 
