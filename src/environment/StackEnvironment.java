@@ -38,4 +38,8 @@ public class StackEnvironment extends Environment{
 	}
 	
 	
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> cfc5b88652d05b39b459f0793a81d3066e462bed
