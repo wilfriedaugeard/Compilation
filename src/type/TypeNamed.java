@@ -6,12 +6,15 @@ public class TypeNamed extends TypeAtomic {
 
 	private String name;
 
-
 	public TypeNamed(String name) {
 		super();
 		this.name = name;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+	
 	@Override
 	public ClonableSymbol clone() {
 		return new TypeNamed(name);

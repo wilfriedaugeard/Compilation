@@ -109,7 +109,7 @@ type_declaration_list = type_declaration_list.list type_declaration.e	{: list.ad
                       | type_declaration.e 								{: return new TypeList(e); :}
                       ;
 
-type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: typeEnvironment.putVariable(e.getConst_value(), f); return new TypeFeature(e.getConst_value(),f); :}
+type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: System.out.println("&& 112 - e : " + e + "\nf : " + f); typeEnvironment.putVariable(e.getConst_value(), f); return new TypeFeature(e.getConst_value(),f); :}
                 ;
 
 type_declaration_head = IDENTIFIER.e	{: return new TypeString(e); :}
@@ -190,7 +190,7 @@ feature_list_type = feature_list_type.list feature_type.e {:  list.add(e) ; retu
                   | feature_type.e 						  {: return new TypeFeatureList(e); :}
                   ;
 
-feature_type = IDENTIFIER.str COLON type.t SEMI		{: return new TypeFeature(str,t); :}
+feature_type = IDENTIFIER.str COLON type.t SEMI		{: /*FIXME:*/ return new TypeFeature(str,t); :}
             ;
                     
 variable_declaration_part = 
@@ -205,6 +205,7 @@ variable_declaration = identifier_list.list COLON type.e SEMI {:
     //TODO: verification typage : si != null et var.type == e
     NodeList nl = new NodeList();
     for (String id : list) {
+        System.out.println("&& 208 - id : " + id + "\ne : " + e);
         nl.add(new NodeId(id, e));
         typeEnvironment.putVariable(id,e); 
     }
@@ -366,12 +367,18 @@ case_default =
 
 variable_access = IDENTIFIER.str								{: 
                                                                     Type t = typeEnvironment.getVariableValue(str);
+                                                                    System.out.println("&& 355 t : " + t);
                                                                     if (t instanceof TypeItemEnum) {
-                                                                        System.out.println("&& 355 t : " + t);
                                                                         TypeItemEnum tie = (TypeItemEnum) t;
                                                                         int x = tie.getConst_value();
                                                                         TypeInt ti = new TypeInt(x);
                                                                         return new NodeId(str, ti);
+                                                                    }
+                                                                    if (t instanceof TypeNamed) {
+                                                                        TypeNamed tt = (TypeNamed) t;
+                                                                        Type tp = typeEnvironment.getVariableValue(tt.getName());
+                                                                        System.out.println("&& 355 t2 : " + tp);
+                                                                        return new NodeId(str, tp);
                                                                     }
                                                                     return new NodeId(str, t); 
                                                                 :}
@@ -384,15 +391,15 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
            | MINUS expression.e @UNARY_MINUS		{: return new NodeOp("-",e); :}
            | expression.e TIMES expression.f		{: return new NodeOp("*",e,f); :}
            | expression.e DIVIDE expression.f		{: return new NodeOp("/",e,f); :}
-           | expression.e OR expression.f			{: return new NodeOp("||",e,f); :}
-           | expression.e AND expression.f			{: return new NodeOp("&&",e,f); :}
-           | NOT expression.e						{: return new NodeOp("!",e); :}
-           | expression.e LESS expression.f			{: return new NodeOp("<",e,f); :}
-           | expression.e LESS_EQ expression.f		{: return new NodeOp("<=",e,f); :}
-           | expression.e MORE expression.f			{: return new NodeOp(">",e,f); :}
-           | expression.e MORE_EQ expression.f		{: return new NodeOp(">=",e,f); :}
-           | expression.e LOGIC_EQ expression.f		{: return new NodeOp("==",e,f); :}
-           | expression.e DIFFERENT expression.f	{: return new NodeOp("!=",e,f); :}
+           | NOT expression.e						{: return new NodeRel("!",e); :}
+           | expression.e OR expression.f			{: return new NodeRel("||",e,f); :}
+           | expression.e AND expression.f			{: return new NodeRel("&&",e,f); :}
+           | expression.e LESS expression.f			{: return new NodeRel("<",e,f); :}
+           | expression.e LESS_EQ expression.f		{: return new NodeRel("<=",e,f); :}
+           | expression.e MORE expression.f			{: return new NodeRel(">",e,f); :}
+           | expression.e MORE_EQ expression.f		{: return new NodeRel(">=",e,f); :}
+           | expression.e LOGIC_EQ expression.f		{: return new NodeRel("==",e,f); :}
+           | expression.e DIFFERENT expression.f	{: return new NodeRel("!=",e,f); :}
            | LPAR expression.e RPAR					{: return e; :}
            | procedure_expression.e					{: return e; :}
            | variable_access.v						{: return v; :}
@@ -401,7 +408,7 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
 
 literal = LIT_INTEGER.e 	{: return new NodeLiteral(new TypeInt(e), e); :}
         | LIT_STRING.e 		{: return new NodeLiteral(new TypeString(e), e); :}
-        | TRUE 				{: return new NodeLiteral(new TypeBoolean(true), true); :}
-        | FALSE 			{: return new NodeLiteral(new TypeBoolean(false), false); :}
-        | NULL 				{: return new NodeLiteral(new TypePointer(null), null); :}
+        | TRUE 				{: return new NodeLiteral(new TypeBoolean(), true); :}
+        | FALSE 			{: return new NodeLiteral(new TypeBoolean(), false); :}
+        | NULL 				{: return new NodeLiteral(new TypePointer(), null); :}
         ;

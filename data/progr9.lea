@@ -131,7 +131,7 @@ begin
 	new p;
 	//new x; // error "Type error in pointer access expression"
 	p^ = 36;
-	p^ = false;
+	//p^ = false; // error "Type int into type boolean"
 	//x^ = null; // error "Type error in pointer access expression"
 	x = p^;
 	dispose p;
