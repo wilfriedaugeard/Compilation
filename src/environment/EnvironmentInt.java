@@ -1,4 +1,5 @@
 package environment;
+import type.*; 
 
 import type.*;
 
