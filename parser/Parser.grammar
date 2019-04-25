@@ -57,8 +57,9 @@
 %typeof IDENTIFIER, LIT_STRING, STRING, BOOLEAN, INTEGER = "String";
 %typeof LIT_INTEGER = "Integer";
 %typeof expression, variable_access, procedure_expression = "NodeExp";
-%typeof expression_part, expresion_list, variable_declaration_list, procedure_definition_list, argt_list, statement_list, case_statement_list, case_statement, argt_part = "NodeList";
+%typeof expression_part, expresion_list, variable_declaration_list, procedure_definition_list, argt_list, statement_list, argt_part = "NodeList";
 %typeof variable_declaration, procedure_definition, argt, statement = "Node";
+%typeof case_statement_list, case_statement = "NodeCaseList";
 %typeof type_declaration, type, range_type, pointer_type, structure_type, feature_type = "Type";
 %typeof type_declaration_head = "TypeString";
 %typeof type_declaration_list, feature_list_type = "TypeList";
@@ -344,17 +345,27 @@ while_statement = WHILE expression.e DO statement.s		{: return new NodeWhile(e,s
 switch_statement = SWITCH expression.e BEGIN case_statement_list.s END		{: return new NodeSwitch(e,s); :}
                 ;
 
-case_statement_list = case_statement_list.list case_statement.s	{: list.add(s); return list; :}
-                    | case_statement.s							{: NodeCaseList list = new NodeCaseList(); list.add(s); return list; :}
+case_statement_list = case_statement_list.list case_statement.s	case_default    {: list.add(s); return list; :}
+                    | case_statement.s							                {: return s; :}
                     ;
 
-case_statement = CASE IDENTIFIER.str COLON statement.s		{: return new NodeCase(str,s); :}
-                | DEFAULT COLON statement.s					{: return new NodeCase(s); :}
+case_statement = CASE identifier_list.list COLON statement.s    {: 
+                                                                    System.out.println("&& 352 - s : " + s);
+                                                                    NodeCaseList ncl = new NodeCaseList();
+                                                                    for (String id : list) {
+                                                                        ncl.add(new NodeCase(id, s));
+                                                                    }
+                                                                    System.out.println("&& 357 - ncl : " + ncl);
+                                                                    return ncl;	
+                                                                :}
                 ;
+	
+case_default =
+	        | DEFAULT COLON statement.s {: return new NodeCase(s); :}
+	        ;
 
-
-
-variable_access = IDENTIFIER.str								{:  Type t = typeEnvironment.getVariableValue(str);
+variable_access = IDENTIFIER.str								{: 
+                                                                    Type t = typeEnvironment.getVariableValue(str);
                                                                     if (t instanceof TypeItemEnum) {
                                                                         System.out.println("&& 355 t : " + t);
                                                                         TypeItemEnum tie = (TypeItemEnum) t;
@@ -362,9 +373,9 @@ variable_access = IDENTIFIER.str								{:  Type t = typeEnvironment.getVariable
                                                                         TypeInt ti = new TypeInt(x);
                                                                         return new NodeId(str, ti);
                                                                     }
-                                                                    return new NodeId(str, typeEnvironment.getVariableValue(str)); 
+                                                                    return new NodeId(str, t); 
                                                                 :}
-                | variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
+                | variable_access.v LBRA expression.e RBRA		{: System.out.println("&&& 367 - v : " + v + "\ne : " + e); return new NodeArrayAccess(v,e); :}
                 |  expression.e CIRC							{: return new NodePtrAccess(e); :}
                 ;
 

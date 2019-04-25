@@ -9,15 +9,17 @@ public final class NodeSwitch extends Node {
 	@Override
 	public boolean checksType() {
 		super.checksType();
-		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 		if (!get(0).checksType()) {
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("faillure");
 			return false;
 		}
 		if (!get(1).checksType()) {
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("faillure");
 			return false;
 		}
+		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 		System.out.println("success");
 		return true;
 	}
