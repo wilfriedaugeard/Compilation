@@ -49,7 +49,7 @@
 
 %terminals IDENTIFIER, TRUE, FALSE, NULL, LIT_INTEGER, LIT_STRING;
 
-%right UNARY_MINUS,CIRC,NOT,IF,THEN;
+%right UNARY_MINUS,CIRC,NOT,IF,THEN, ELSE;
 %left TIMES, DIVIDE;
 %left PLUS, MINUS;
 %left LESS, MORE, LESS_EQ, MORE_EQ,AND,OR,DIFFERENT,LOGIC_EQ;
@@ -93,13 +93,22 @@
 ***/
 
 program = type_declaration_part 
+		empty_rule_program_begin
         variable_declaration_part 
         procedure_definition_part 
         BEGIN 
         statement_list.l 
         END 
+        empty_rule_program_end
         {: System.out.println(typeEnvironment.toString()+"\n"); return l; :}
         ;
+        
+empty_rule_program_begin = {: stackEnvironment.push(new HashMap<String, Type>()); return new TypeVoid(); :}
+					;
+					
+empty_rule_program_end = {:  System.out.println("!!!!! "+stackEnvironment.toString()+""); stackEnvironment.pop();return new TypeVoid(); :}
+					;
+
 
 type_declaration_part =
                     | TYPE type_declaration_list.list   {: return list ; :}
@@ -207,7 +216,7 @@ variable_declaration = identifier_list.list COLON type.e SEMI {:
     for (String id : list) {
         System.out.println("&& 208 - id : " + id + "\ne : " + e);
         nl.add(new NodeId(id, e));
-        typeEnvironment.putVariable(id,e); 
+        stackEnvironment.putVariable(id,e);
     }
     return nl;	
  :} ;
@@ -224,10 +233,12 @@ procedure_definition_list = procedure_definition_list.list procedure_definition.
                           | procedure_definition.e									 {: return new NodeList(e); :}
                           ;
 
-procedure_definition = procedure_definition_head block
+procedure_definition =  procedure_definition_head block 
                      | procedure_definition_head SEMI
                      ;
+                     
 
+					
 procedure_definition_head = PROCEDURE IDENTIFIER.id LPAR argt_part.args RPAR {:
                                 TypeTuple tt = new TypeTuple();
                                 Iterator<Node> i = args.iterator();
@@ -263,13 +274,23 @@ argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
           | argt.e 								{: return new NodeList(e); :}
           ;
 
-argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :};
+argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :}
+		;
 
-block = variable_declaration_part 
-        BEGIN 
-        statement_list.l 
-        END {: return l; :} 
+block =  empty_rule_begin 
+         variable_declaration_part 
+         BEGIN 
+         statement_list.l 
+         END 
+         empty_rule_end 
+         {: return l; :} 
         ;
+
+empty_rule_begin =  {: stackEnvironment.push(new HashMap<String, Type>()); return new TypeVoid(); :}
+				;
+				
+empty_rule_end = {: System.out.println("!!!!! "+stackEnvironment.toString()+""); stackEnvironment.pop(); return new TypeVoid(); :}
+				;
 
 statement_list = statement_list.list statement.e 	{: list.add(e); return list; :}
                | statement.e 						{: return new NodeList(e); :} 
@@ -360,28 +381,31 @@ case_statement = CASE identifier_list.list COLON statement.s    {:
                                                                     return ncl;	
                                                                 :}
                 ;
-	
+                
 case_default =
 	        | DEFAULT COLON statement.s {: return new NodeCase(s); :}
 	        ;
 
-variable_access = IDENTIFIER.str								{: 
-                                                                    Type t = typeEnvironment.getVariableValue(str);
-                                                                    System.out.println("&& 355 t : " + t);
-                                                                    if (t instanceof TypeItemEnum) {
-                                                                        TypeItemEnum tie = (TypeItemEnum) t;
-                                                                        int x = tie.getConst_value();
-                                                                        TypeInt ti = new TypeInt(x);
-                                                                        return new NodeId(str, ti);
-                                                                    }
-                                                                    if (t instanceof TypeNamed) {
-                                                                        TypeNamed tt = (TypeNamed) t;
-                                                                        Type tp = typeEnvironment.getVariableValue(tt.getName());
-                                                                        System.out.println("&& 355 t2 : " + tp);
-                                                                        return new NodeId(str, tp);
-                                                                    }
-                                                                    return new NodeId(str, t); 
-                                                                :}
+variable_access = IDENTIFIER.str								{:  Type t;
+                                                    if(stackEnvironment.getVariableValue(str)!=null)
+                                                      t = stackEnvironment.getVariableValue(str);
+                                                    else
+                                                    t = typeEnvironment.getVariableValue(str);
+                                                    if (t instanceof TypeItemEnum) {
+                                                        System.out.println("&& 355 t : " + t);
+                                                        TypeItemEnum tie = (TypeItemEnum) t;
+                                                        int x = tie.getConst_value();
+                                                        TypeInt ti = new TypeInt(x);
+                                                        return new NodeId(str, ti);
+                                                    }
+                                                    if (t instanceof TypeNamed) {
+                                                        TypeNamed tt = (TypeNamed) t;
+                                                        Type tp = typeEnvironment.getVariableValue(tt.getName());
+                                                        System.out.println("&& 355 t2 : " + tp);
+                                                        return new NodeId(str, tp);
+                                                    }
+                                                    return new NodeId(str, t); 
+                                                :}
                 | variable_access.v LBRA expression.e RBRA		{: System.out.println("&&& 367 - v : " + v + "\ne : " + e); return new NodeArrayAccess(v,e); :}
                 |  expression.e CIRC							{: return new NodePtrAccess(e); :}
                 ;

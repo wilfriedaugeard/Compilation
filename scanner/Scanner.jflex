@@ -19,8 +19,6 @@ Identifier 	= [a-zA-Z_][a-zA-Z0-9_]*
 String 		= \"[^\"]*\"
 Integer 	= [0-9]+
 Hexa 		= 0x[0-9A-Fa-f]{1,8}
-Decimal 	= ({Integer}(\.{Integer})?)|(\.{Integer})
-Lit_Integer = {Hexa}|{Integer}|{Decimal}
 
 Commentary 	= \/\*~(\*\/)|\/\/.*
 
