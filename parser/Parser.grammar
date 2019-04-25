@@ -231,10 +231,12 @@ procedure_definition_list = procedure_definition_list.list procedure_definition.
                           | procedure_definition.e									 {: return new NodeList(e); :}
                           ;
 
-procedure_definition = procedure_definition_head block
+procedure_definition =  procedure_definition_head block 
                      | procedure_definition_head SEMI
                      ;
+                     
 
+					
 procedure_definition_head = PROCEDURE IDENTIFIER.id LPAR argt_part.args RPAR {:
                                 TypeTuple tt = new TypeTuple();
                                 Iterator<Node> i = args.iterator();
@@ -270,7 +272,8 @@ argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
           | argt.e 								{: return new NodeList(e); :}
           ;
 
-argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :};
+argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :}
+		;
 
 block =  empty_rule_begin variable_declaration_part BEGIN statement_list.l END empty_rule_end {: return l; :} 
         ;
