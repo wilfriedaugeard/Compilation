@@ -15,5 +15,11 @@ public class ExpList implements IntermediateCode {
 		// TODO Auto-generated method stub
 		System.err.println("TODO: " + this.getClass().getSimpleName() + ".canonicalTransformation()()");
 	}
+	
+	public void add(Exp s) {
+		tail.add(this.head);
+		this.head = s;
+	}
+	
 
 }

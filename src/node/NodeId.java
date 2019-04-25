@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 import type.Type;
 
@@ -36,6 +38,14 @@ public final class NodeId extends NodeExp {
 	@Override
 	public NodeId clone() {
 		return new NodeId(name, type);
+	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		Name n = new Name(new LabelLocation(this.name));
+		Label label = new Label(n.getLabel());
+		sl.add(label);
+		return sl;
 	}
 
 }

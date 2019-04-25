@@ -2,6 +2,7 @@ package node;
 
 import type.TypeBoolean;
 import type.TypeInt;
+import intermediateCode.*;
 
 public class NodeRel extends NodeExp {
 
@@ -34,10 +35,22 @@ public class NodeRel extends NodeExp {
 	private NodeExp getOp2() {
 		return (NodeExp) this.get(1);
 	}
+	
+	@Override
+	public String getName() {
+		return this.name;
+	}
 
 	@Override
 	public NodeRel clone() {
 		return new NodeRel(name, (Node) getOp1().clone(), (Node) getOp2().clone());
 	};
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		
+		//A VOIR
+		return sl;
+	}
 
 }

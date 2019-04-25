@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import type.*;
 
+import intermediateCode.*;
+
 public final class NodeCallFct extends NodeExp {
 
 	protected String name;
@@ -85,6 +87,26 @@ public final class NodeCallFct extends NodeExp {
 		return "NodeCallFct " + name + "()";
 	}
 
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		//CREER LISTE DE VARIABLE TEMPORAIRE des arg
+		//JUMP(LABEL(NOM de fonction))
+		Name func = new Name (new LabelLocation(this.name));
+		ExpList arg = new ExpList(null,null);
+		Iterator<Node> itArgs = this.getArgs().iterator();
+		while(itArgs.hasNext()) {
+			NodeExp nodeArg = (NodeExp) itArgs.next();
+			arg.add(nodeArg.generateIntermediateCode(new StmList(null,null)));
+		}
+		Call c = new Call(func, arg);
+		// A FAIRE
+		// il faut avoir la liste des labels de chaque arg
+		Jump j = new Jump(c, func.getLabel());
+		
+		sl.add(j);
+		return sl;
+		
+	}
 
 
 }

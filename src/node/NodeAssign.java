@@ -1,6 +1,7 @@
 package node;
 
 import type.Type;
+import intermediateCode.*;
 
 public final class NodeAssign extends Node {
 
@@ -48,5 +49,24 @@ public final class NodeAssign extends Node {
 	public NodeAssign clone() {
 		return new NodeAssign((NodeExp) getLhs().clone(), (NodeExp) getRhs().clone());
 	};
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		// code intermédiaire lhs et de rhs 
+		// MOVE(MEM(lhs), rhs), 
+		sl = this.getLhs().generateIntermediateCode(sl);
+		LabelLocation l = new LabelLocation();
+		Name lname = new Name(l);
+		Label llabel = new Label(l);
+		sl.add(llabel);
+		sl = this.getRhs().generateIntermediateCode(sl);
+		Name rname = new Name(l);
+		Label rlabel = new Label(l);
+		sl.add(rlabel);
+		Mem mem = new Mem(lname);
+		Move move = new Move(mem, rname);
+		sl.add(move);
+		return sl;
+	}
 
 }

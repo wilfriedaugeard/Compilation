@@ -1,4 +1,5 @@
 package node;
+import intermediateCode.*;
 
 public final class NodeNew extends Node {
 
@@ -17,6 +18,12 @@ public final class NodeNew extends Node {
 	@Override
 	public NodeNew clone() {
 		return new NodeNew((Node) this.get(0).clone());
+	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		// VOIR DISPOSE
+		return sl;
 	}
 
 }

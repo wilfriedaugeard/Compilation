@@ -1,4 +1,5 @@
 package node;
+import intermediateCode.*;
 
 public final class NodeCase extends Node {
 
@@ -35,6 +36,16 @@ public final class NodeCase extends Node {
 
 	public boolean isDefaultValue() {
 		return defaultValue;
+	}
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		Name caseName = new Name(new LabelLocation(this.nameValue));
+		StmList stm = getStm().generateIntermediateCode(sl);
+		//veut stm et pas stmList faut récuperer tete
+		Eseq eseq = new Eseq(stm, caseName);
+		
+		sl.add(eseq);
+		return sl;
 	}
 
 }

@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 public final class NodeWhile extends Node {
 
@@ -35,6 +37,19 @@ public final class NodeWhile extends Node {
 
 	private Node getExp() {
 		return this.get(0);
+	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		//NAME TEST (boolexpr)
+		//CALL WHILE
+		//CALL END
+		//NAME WHILE 
+		// code intermédiaire de stm
+		//CALL TEST
+		//NAME END
+		// le tout dans expList
+		return sl;
 	}
 
 

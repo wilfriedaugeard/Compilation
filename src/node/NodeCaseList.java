@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 public final class NodeCaseList extends NodeExp {
 
@@ -18,5 +20,10 @@ public final class NodeCaseList extends NodeExp {
 	public NodeCaseList clone() {
 		return new NodeCaseList();
 	}
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		return sl;
+	}
+
 
 }

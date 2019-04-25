@@ -1,6 +1,7 @@
 package node;
 
 import type.*;
+import intermediateCode.*;
 
 public final class NodeArrayAccess extends NodeExp {
 	private String name;
@@ -51,6 +52,15 @@ public final class NodeArrayAccess extends NodeExp {
 	@Override
 	public String getName() {
 		return this.name;
+	}
+
+	@Override
+	public StmList generateIntermediateCode(StmList sl)  {
+		
+		LabelLocation label = new LabelLocation(this.name);
+		Label l = new Label(label);
+		sl.add(l);
+		return sl;
 	}
 
 

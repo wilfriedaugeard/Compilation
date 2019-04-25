@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 public final class NodeSwitch extends Node {
 
@@ -34,5 +36,11 @@ public final class NodeSwitch extends Node {
 	private Node getExp() {
 		return this.get(0);
 	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		//ESEQ 
+		return sl;
+		}
 
 }

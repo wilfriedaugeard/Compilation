@@ -12,3 +12,4 @@ data/output
 build\.xml
 
 \.vscode/ipch/ddbe599a576b0dbc/
+/.metadata/

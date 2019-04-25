@@ -2,6 +2,8 @@ package node;
 
 import type.*;
 
+import intermediateCode.*;
+
 public abstract class NodeExp extends Node {
 
 	protected Type type;
@@ -17,5 +19,12 @@ public abstract class NodeExp extends Node {
 	public String getName() {
 		return "";
 	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		return sl;
+		
+	}
+
 
 }

@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 import java.util.Iterator;
 
@@ -44,5 +46,12 @@ public final class NodeList extends Node {
 		}
 		return node;
 	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		//ExpList sur les élements
+		return sl;
+	}
+
 
 }

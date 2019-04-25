@@ -1,6 +1,8 @@
 package node;
 
 import type.*;
+import intermediateCode.*;
+
 
 public final class NodePtrAccess extends NodeExp {
 
@@ -36,6 +38,13 @@ public final class NodePtrAccess extends NodeExp {
 	@Override
 	public String getName() {
 		return this.name;
+	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		
+		////CALL sur case label correspondant a cette case qui deviendra un JUMP
+		return sl;
 	}
 
 }

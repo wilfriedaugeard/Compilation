@@ -18,6 +18,8 @@ public class Main {
 					 System.err.println("*** Fichier " + arg);
 					 Node result = (Node) parser.parse(input);
 					 System.err.println("*** Analyse syntaxique ok");
+					 result.generateIntermediateCode();
+					 
 					 if (checksType) {
 						 if (!result.checksType())
 							 System.err.println("*** Erreur de typage");

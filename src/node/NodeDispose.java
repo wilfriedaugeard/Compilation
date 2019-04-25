@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 public final class NodeDispose extends Node {
 
@@ -17,6 +19,11 @@ public final class NodeDispose extends Node {
 	@Override
 	public NodeDispose clone() {
 		return new NodeDispose((Node) this.get(0).clone());
+	}
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		//A FAIRE
+		return sl;
 	}
 
 }

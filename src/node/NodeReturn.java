@@ -1,4 +1,6 @@
 package node;
+import intermediateCode.*;
+
 
 public final class NodeReturn extends NodeExp {
 
@@ -17,6 +19,12 @@ public final class NodeReturn extends NodeExp {
 	@Override
 	public NodeReturn clone() {
 		return new NodeReturn((Node) get(0).clone());
+	}
+	
+	@Override
+	public StmList generateIntermediateCode(StmList sl) {
+		// MEM ?
+		return sl;
 	}
 
 }

@@ -1,5 +1,6 @@
 package node;
 
+import intermediateCode.*;
 public class NodeOp extends NodeExp {
 
 	protected String name;
@@ -50,6 +51,15 @@ public class NodeOp extends NodeExp {
 			return new NodeOp(name, (NodeExp) getOp1().clone(), (NodeExp) getOp2().clone());
 		return null;
 		};
+		
+		@Override
+		public StmList generateIntermediateCode(StmList sl) {
+			// code intermediaire op1 et op2
+			// switch sur les name (pour trouver l'opérateur)
+			// BINOP
+	return sl;
+			
+		}
 	
 
 }

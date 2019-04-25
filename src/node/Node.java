@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import main.*;
 import node.NodeInterface;
+import intermediateCode.*;
 
 public abstract class Node extends ClonableSymbol implements NodeInterface {
 
@@ -92,9 +93,10 @@ public abstract class Node extends ClonableSymbol implements NodeInterface {
 	}
 
 	@Override
-	public void generateIntermediateCode() {
+	public StmList generateIntermediateCode(StmList sl)  {
 		// TODO Auto-generated method stub
 		System.err.println("TODO: " + this.getClass().getSimpleName() + ".generateIntermediateCode()");
+		return sl;
 	}
 
 }

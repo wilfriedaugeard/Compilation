@@ -1,4 +1,5 @@
 package node;
+import intermediateCode.*;
 
 public interface NodeInterface {
 	
@@ -8,7 +9,7 @@ public interface NodeInterface {
 	boolean checksType();
 
 	// Cette méthode, non encore implémentée produit le code intermédiaire Exp ou Stm
-	void generateIntermediateCode();
+	public StmList generateIntermediateCode(StmList sl);
 	
 	// Affiche sous forme parenthésée ce Node
 	String toString();

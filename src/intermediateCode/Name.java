@@ -7,5 +7,9 @@ public class Name extends Exp {
 		super();
 		this.label = label;
 	}
+	
+	public LabelLocation getLabel() {
+		return this.label;
+	}
 
 }
