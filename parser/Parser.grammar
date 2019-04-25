@@ -263,14 +263,11 @@ argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
 
 argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :};
 
-block = empty_rule_block_begin variable_declaration_part BEGIN statement_list.l empty_rule_block_end END {: return l; :} 
+block = variable_declaration_part 
+        BEGIN 
+        statement_list.l 
+        END {: return l; :} 
         ;
-        
-empty_rule_block_begin = {: System.out.println("!!!!!!!!!!!!!!!"); stackEnvironment.push(new HashMap<String, Type>()); return null; :} 
-			;
-			
-empty_rule_block_end = {: stackEnvironment.pop(); return null; :}
-				;
 
 statement_list = statement_list.list statement.e 	{: list.add(e); return list; :}
                | statement.e 						{: return new NodeList(e); :} 
