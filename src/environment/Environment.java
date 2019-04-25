@@ -25,7 +25,7 @@ public class Environment implements EnvironmentInt {
 	}
 	
 	public String toString(){
-		return environmentHMap.toString();
+		return "Environment \""+name+"\" :\n"+environmentHMap.toString();
 	}
 
 	// Implémenter la classe pour gérer un environnement
