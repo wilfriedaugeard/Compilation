@@ -25,4 +25,10 @@ public class TypePointer extends TypeComplex {
 		return true;
 	}
 
+	@Override
+	public boolean equals(Type obj) {
+		// System.out.println("EQ" + this + " = " + obj);
+		return (this.getClass() == obj.getClass());
+	}
+
 }

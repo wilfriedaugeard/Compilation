@@ -57,8 +57,9 @@
 %typeof IDENTIFIER, LIT_STRING, STRING, BOOLEAN, INTEGER = "String";
 %typeof LIT_INTEGER = "Integer";
 %typeof expression, variable_access, procedure_expression = "NodeExp";
-%typeof expression_part, expresion_list, variable_declaration_list, procedure_definition_list, argt_list, statement_list, case_statement_list, case_statement, argt_part = "NodeList";
+%typeof expression_part, expresion_list, variable_declaration_list, procedure_definition_list, argt_list, statement_list, argt_part = "NodeList";
 %typeof variable_declaration, procedure_definition, argt, statement = "Node";
+%typeof case_statement_list, case_statement = "NodeCaseList";
 %typeof type_declaration, type, range_type, pointer_type, structure_type, feature_type = "Type";
 %typeof type_declaration_head = "TypeString";
 %typeof type_declaration_list, feature_list_type = "TypeList";
@@ -117,7 +118,7 @@ type_declaration_list = type_declaration_list.list type_declaration.e	{: list.ad
                       | type_declaration.e 								{: return new TypeList(e); :}
                       ;
 
-type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: typeEnvironment.putVariable(e.getConst_value(), f); return new TypeFeature(e.getConst_value(),f); :}
+type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: System.out.println("&& 112 - e : " + e + "\nf : " + f); typeEnvironment.putVariable(e.getConst_value(), f); return new TypeFeature(e.getConst_value(),f); :}
                 ;
 
 type_declaration_head = IDENTIFIER.e	{: return new TypeString(e); :}
@@ -198,7 +199,7 @@ feature_list_type = feature_list_type.list feature_type.e {:  list.add(e) ; retu
                   | feature_type.e 						  {: return new TypeFeatureList(e); :}
                   ;
 
-feature_type = IDENTIFIER.str COLON type.t SEMI		{: return new TypeFeature(str,t); :}
+feature_type = IDENTIFIER.str COLON type.t SEMI		{: /*FIXME:*/ return new TypeFeature(str,t); :}
             ;
                     
 variable_declaration_part = 
@@ -213,6 +214,7 @@ variable_declaration = identifier_list.list COLON type.e SEMI {:
     //TODO: verification typage : si != null et var.type == e
     NodeList nl = new NodeList();
     for (String id : list) {
+        System.out.println("&& 208 - id : " + id + "\ne : " + e);
         nl.add(new NodeId(id, e));
         stackEnvironment.putVariable(id,e);
     }
@@ -275,7 +277,13 @@ argt_list = argt_list.list COMMA argt.e 		{: list.add(e) ; return list;:}
 argt = IDENTIFIER.i COLON type.e {: return new NodeId(i, e); :}
 		;
 
-block =  empty_rule_begin variable_declaration_part BEGIN statement_list.l END empty_rule_end {: return l; :} 
+block =  empty_rule_begin 
+         variable_declaration_part 
+         BEGIN 
+         statement_list.l 
+         END 
+         empty_rule_end 
+         {: return l; :} 
         ;
 
 empty_rule_begin =  {: stackEnvironment.push(new HashMap<String, Type>()); return new TypeVoid(); :}
@@ -283,7 +291,6 @@ empty_rule_begin =  {: stackEnvironment.push(new HashMap<String, Type>()); retur
 				
 empty_rule_end = {: System.out.println("!!!!! "+stackEnvironment.toString()+""); stackEnvironment.pop(); return new TypeVoid(); :}
 				;
-
 
 statement_list = statement_list.list statement.e 	{: list.add(e); return list; :}
                | statement.e 						{: return new NodeList(e); :} 
@@ -360,32 +367,46 @@ while_statement = WHILE expression.e DO statement.s		{: return new NodeWhile(e,s
 switch_statement = SWITCH expression.e BEGIN case_statement_list.s END		{: return new NodeSwitch(e,s); :}
                 ;
 
-case_statement_list = case_statement_list.list case_statement.s	{: list.add(s); return list; :}
-                    | case_statement.s							{: NodeCaseList list = new NodeCaseList(); list.add(s); return list; :}
+case_statement_list = case_statement_list.list case_statement.s	case_default    {: list.add(s); return list; :}
+                    | case_statement.s							                {: return s; :}
                     ;
 
-case_statement = CASE IDENTIFIER.str COLON statement.s		{: return new NodeCase(str,s); :}
-                | DEFAULT COLON statement.s					{: return new NodeCase(s); :}
+case_statement = CASE identifier_list.list COLON statement.s    {: 
+                                                                    System.out.println("&& 352 - s : " + s);
+                                                                    NodeCaseList ncl = new NodeCaseList();
+                                                                    for (String id : list) {
+                                                                        ncl.add(new NodeCase(id, s));
+                                                                    }
+                                                                    System.out.println("&& 357 - ncl : " + ncl);
+                                                                    return ncl;	
+                                                                :}
                 ;
-
-
+                
+case_default =
+	        | DEFAULT COLON statement.s {: return new NodeCase(s); :}
+	        ;
 
 variable_access = IDENTIFIER.str								{:  Type t;
-																	if(stackEnvironment.getVariableValue(str)!=null){
-																		t = stackEnvironment.getVariableValue(str);
-																	}else{
-																		t = typeEnvironment.getVariableValue(str);
-																		if (t instanceof TypeItemEnum) {
-                                                                        	System.out.println("&& 355 t : " + t);
-                                                                        	TypeItemEnum tie = (TypeItemEnum) t;
-                                                                        	int x = tie.getConst_value();
-                                                                        	TypeInt ti = new TypeInt(x);
-                                                                        	return new NodeId(str, ti);
-                                                                    	}
-																	}
-																	return new NodeId(str, t); 
-                                                                :}
-                | variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
+                                                    if(stackEnvironment.getVariableValue(str)!=null)
+                                                      t = stackEnvironment.getVariableValue(str);
+                                                    else
+                                                    t = typeEnvironment.getVariableValue(str);
+                                                    if (t instanceof TypeItemEnum) {
+                                                        System.out.println("&& 355 t : " + t);
+                                                        TypeItemEnum tie = (TypeItemEnum) t;
+                                                        int x = tie.getConst_value();
+                                                        TypeInt ti = new TypeInt(x);
+                                                        return new NodeId(str, ti);
+                                                    }
+                                                    if (t instanceof TypeNamed) {
+                                                        TypeNamed tt = (TypeNamed) t;
+                                                        Type tp = typeEnvironment.getVariableValue(tt.getName());
+                                                        System.out.println("&& 355 t2 : " + tp);
+                                                        return new NodeId(str, tp);
+                                                    }
+                                                    return new NodeId(str, t); 
+                                                :}
+                | variable_access.v LBRA expression.e RBRA		{: System.out.println("&&& 367 - v : " + v + "\ne : " + e); return new NodeArrayAccess(v,e); :}
                 |  expression.e CIRC							{: return new NodePtrAccess(e); :}
                 ;
 
@@ -394,15 +415,15 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
            | MINUS expression.e @UNARY_MINUS		{: return new NodeOp("-",e); :}
            | expression.e TIMES expression.f		{: return new NodeOp("*",e,f); :}
            | expression.e DIVIDE expression.f		{: return new NodeOp("/",e,f); :}
-           | expression.e OR expression.f			{: return new NodeOp("||",e,f); :}
-           | expression.e AND expression.f			{: return new NodeOp("&&",e,f); :}
-           | NOT expression.e						{: return new NodeOp("!",e); :}
-           | expression.e LESS expression.f			{: return new NodeOp("<",e,f); :}
-           | expression.e LESS_EQ expression.f		{: return new NodeOp("<=",e,f); :}
-           | expression.e MORE expression.f			{: return new NodeOp(">",e,f); :}
-           | expression.e MORE_EQ expression.f		{: return new NodeOp(">=",e,f); :}
-           | expression.e LOGIC_EQ expression.f		{: return new NodeOp("==",e,f); :}
-           | expression.e DIFFERENT expression.f	{: return new NodeOp("!=",e,f); :}
+           | NOT expression.e						{: return new NodeRel("!",e); :}
+           | expression.e OR expression.f			{: return new NodeRel("||",e,f); :}
+           | expression.e AND expression.f			{: return new NodeRel("&&",e,f); :}
+           | expression.e LESS expression.f			{: return new NodeRel("<",e,f); :}
+           | expression.e LESS_EQ expression.f		{: return new NodeRel("<=",e,f); :}
+           | expression.e MORE expression.f			{: return new NodeRel(">",e,f); :}
+           | expression.e MORE_EQ expression.f		{: return new NodeRel(">=",e,f); :}
+           | expression.e LOGIC_EQ expression.f		{: return new NodeRel("==",e,f); :}
+           | expression.e DIFFERENT expression.f	{: return new NodeRel("!=",e,f); :}
            | LPAR expression.e RPAR					{: return e; :}
            | procedure_expression.e					{: return e; :}
            | variable_access.v						{: return v; :}
@@ -411,7 +432,7 @@ expression = expression.e PLUS expression.f			{: return new NodeOp("+",e,f); :}
 
 literal = LIT_INTEGER.e 	{: return new NodeLiteral(new TypeInt(e), e); :}
         | LIT_STRING.e 		{: return new NodeLiteral(new TypeString(e), e); :}
-        | TRUE 				{: return new NodeLiteral(new TypeBoolean(true), true); :}
-        | FALSE 			{: return new NodeLiteral(new TypeBoolean(false), false); :}
-        | NULL 				{: return new NodeLiteral(new TypePointer(null), null); :}
+        | TRUE 				{: return new NodeLiteral(new TypeBoolean(), true); :}
+        | FALSE 			{: return new NodeLiteral(new TypeBoolean(), false); :}
+        | NULL 				{: return new NodeLiteral(new TypePointer(), null); :}
         ;
