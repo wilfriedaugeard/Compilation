@@ -8,4 +8,8 @@ public class Temp extends Exp {
 		this.temp = temp;
 	}
 
+	public String toString() {
+		return "TEMP(" + temp.toString() + ")";
+	}
+
 }

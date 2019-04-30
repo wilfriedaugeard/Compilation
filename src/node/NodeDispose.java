@@ -1,6 +1,6 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
 
 public final class NodeDispose extends Node {
 
@@ -20,10 +20,11 @@ public final class NodeDispose extends Node {
 	public NodeDispose clone() {
 		return new NodeDispose((Node) this.get(0).clone());
 	}
+
 	@Override
 	public IntermediateCode generateIntermediateCode() {
 		get(0).generateIntermediateCode();
-		Move move = new Move(get(0).getIntExp(),new Name(new LabelLocation("null")));
+		Move move = new Move(get(0).getIntExp(), new Name(new LabelLocation("null")));
 		return move;
 	}
 

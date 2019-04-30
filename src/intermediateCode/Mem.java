@@ -8,4 +8,8 @@ public class Mem extends Exp {
 		this.exp = exp;
 	}
 
+	public String toString() {
+		return "MEM(" + exp.toString() + ")";
+	}
+
 }

@@ -20,12 +20,12 @@ public abstract class Node extends ClonableSymbol implements NodeInterface {
 	public Node() {
 		super();
 		this.uniqId = Node.staticUniqId++;
-		//System.err.println("Create class " + this.getClass().getSimpleName());
+		// System.err.println("Create class " + this.getClass().getSimpleName());
 		this.elts = new ArrayList<Node>();
-		
+
 	}
 
-	public Node(Node ... args) {
+	public Node(Node... args) {
 		this();
 		for (Node elt : args) {
 			elts.add(elt);
@@ -54,7 +54,7 @@ public abstract class Node extends ClonableSymbol implements NodeInterface {
 		System.err.println("--- CheckType " + this.getClass().getSimpleName());
 		return false;
 	};
-	
+
 	public void add(Node elt) {
 		this.elts.add(elt);
 	}
@@ -93,24 +93,23 @@ public abstract class Node extends ClonableSymbol implements NodeInterface {
 			System.err.println("ERROR: build dot");
 		}
 	}
-	
+
 	public Exp getIntExp() {
 		return this.exp;
 	}
 
-
 	private Stm seqRec(Iterator<Node> arg) {
 		Stm s = (Stm) arg.next().generateIntermediateCode();
-		if(arg.hasNext()) return new Seq(s,seqRec(arg));
-		else return null;
+		if (arg.hasNext())
+			return new Seq(s, seqRec(arg));
+		else
+			return null;
 	}
-	
-	
+
 	public IntermediateCode generateIntermediateCode() {
-		//ExpList sur les élements
+		// ExpList sur les élements
 		Iterator<Node> itArgs = this.elts.iterator();
 		return seqRec(itArgs);
 	}
-
 
 }

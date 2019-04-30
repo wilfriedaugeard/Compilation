@@ -1,6 +1,7 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
+import java.util.Iterator;
 
 public final class NodeCaseList extends NodeExp {
 
@@ -20,11 +21,18 @@ public final class NodeCaseList extends NodeExp {
 	public NodeCaseList clone() {
 		return new NodeCaseList();
 	}
-	@Override
-	public IntermediateCode generateIntermediateCode(){
-		// A REVOIR
-		return new ExpList(null,null);
+
+	public Stm seqRec(Iterator<Node> arg) {
+		Stm s = (Stm) arg.next().generateIntermediateCode();
+		if (arg.hasNext())
+			return new Seq(s, seqRec(arg));
+		else
+			return new Seq(s, null);
 	}
 
-
+	@Override
+	public IntermediateCode generateIntermediateCode() {
+		Iterator<Node> itArgs = this.elts.iterator();
+		return seqRec(itArgs);
+	}
 }

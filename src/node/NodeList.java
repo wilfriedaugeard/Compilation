@@ -1,6 +1,6 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
 
 import java.util.Iterator;
 
@@ -25,8 +25,10 @@ public final class NodeList extends Node {
 			}
 		}
 		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
-		if (result) System.out.println("success");
-		else 	System.out.println("faillure");
+		if (result)
+			System.out.println("success");
+		else
+			System.out.println("faillure");
 		return result;
 	}
 
@@ -46,16 +48,18 @@ public final class NodeList extends Node {
 		}
 		return node;
 	}
-	
+
 	public Stm seqRec(Iterator<Node> arg) {
 		Stm s = (Stm) arg.next().generateIntermediateCode();
-		if(arg.hasNext()) return new Seq(s,seqRec(arg));
-		else return null;
+		if (arg.hasNext())
+			return new Seq(s, seqRec(arg));
+		else
+			return new Seq(s, null);
 	}
-	
+
 	@Override
 	public IntermediateCode generateIntermediateCode() {
-		//ExpList sur les élements
+		// ExpList sur les élements
 		Iterator<Node> itArgs = this.elts.iterator();
 		return seqRec(itArgs);
 	}

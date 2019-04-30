@@ -8,4 +8,8 @@ public class Label extends Stm {
 		this.label = label;
 	}
 
+	public String toString() {
+		return "LABEL(" + label.toString() + ")";
+	}
+
 }

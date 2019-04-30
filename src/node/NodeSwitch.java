@@ -1,6 +1,7 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
+import java.util.Iterator;
 
 public final class NodeSwitch extends Node {
 
@@ -12,12 +13,12 @@ public final class NodeSwitch extends Node {
 	public boolean checksType() {
 		super.checksType();
 		if (!get(0).checksType()) {
-		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("faillure");
 			return false;
 		}
 		if (!get(1).checksType()) {
-		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
+			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("faillure");
 			return false;
 		}
@@ -38,10 +39,14 @@ public final class NodeSwitch extends Node {
 	private Node getExp() {
 		return this.get(0);
 	}
-	
+
 	@Override
-	public IntermediateCode generateIntermediateCode()  {		//ESEQ 
-		return null;
-		}
+	public IntermediateCode generateIntermediateCode() {
+		this.getExp().generateIntermediateCode();
+		Name name = (Name) this.getExp().getIntExp();
+		Label e = new Label(name.getLabel());
+		Stm s = (Stm) this.getStm().generateIntermediateCode();
+		return new Seq(e, s);
+	}
 
 }

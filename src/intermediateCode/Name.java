@@ -7,9 +7,13 @@ public class Name extends Exp {
 		super();
 		this.label = label;
 	}
-	
+
 	public LabelLocation getLabel() {
 		return this.label;
+	}
+
+	public String toString() {
+		return "NAME(" + label.toString() + ")";
 	}
 
 }

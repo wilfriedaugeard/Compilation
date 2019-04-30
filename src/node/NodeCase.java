@@ -1,11 +1,12 @@
 package node;
+
 import intermediateCode.*;
 
 public final class NodeCase extends Node {
 
 	private String nameValue;
 	private boolean defaultValue;
-	
+
 	public NodeCase(String nameValue, Node stm) {
 		super(stm);
 		this.nameValue = nameValue;
@@ -37,13 +38,12 @@ public final class NodeCase extends Node {
 	public boolean isDefaultValue() {
 		return defaultValue;
 	}
+
 	@Override
-	public IntermediateCode generateIntermediateCode()  {
-		Name caseName = new Name(new LabelLocation(this.nameValue));
-		IntermediateCode stm = this.getStm().generateIntermediateCode();
-		//veut stm et pas stmList faut récuperer tete
-		//Eseq eseq = new Eseq(stm, caseName);
-		return null;
+	public IntermediateCode generateIntermediateCode() {
+		Stm stm = (Stm) this.getStm().generateIntermediateCode();
+		Label n = new Label(new LabelLocation(this.nameValue));
+		return new Seq(n, stm);
 	}
 
 }

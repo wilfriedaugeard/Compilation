@@ -12,7 +12,7 @@ public final class NodeAssign extends Node {
 	@Override
 	public boolean checksType() {
 		super.checksType();
-		if (!get(0).checksType())  {
+		if (!get(0).checksType()) {
 			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("faillure 1");
 			return false;
@@ -29,8 +29,7 @@ public final class NodeAssign extends Node {
 			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("faillure 3");
 			return false;
-		}
-		else {
+		} else {
 			System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
 			System.out.println("success");
 			return true;
@@ -49,14 +48,14 @@ public final class NodeAssign extends Node {
 	public NodeAssign clone() {
 		return new NodeAssign((NodeExp) getLhs().clone(), (NodeExp) getRhs().clone());
 	};
-	
+
 	@Override
-	public IntermediateCode generateIntermediateCode()  {
-		// code intermédiaire lhs et de rhs 
+	public IntermediateCode generateIntermediateCode() {
+		// code intermédiaire lhs et de rhs
 		// MOVE(MEM(lhs), rhs)
 		getLhs().generateIntermediateCode();
 		getRhs().generateIntermediateCode();
-		Move move = new Move(getLhs().getIntExp(),getRhs().getIntExp());
+		Move move = new Move(getLhs().getIntExp(), getRhs().getIntExp());
 		return move;
 	}
 

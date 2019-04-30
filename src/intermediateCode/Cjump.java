@@ -42,4 +42,18 @@ public class Cjump extends Stm {
 			throw new Error("bad relop in CJUMP.notRel");
 		}
 	}
+
+	public String toString() {
+		String l = "null", r = "null", t = "null", f = "null";
+		if (this.left != null)
+			l = left.toString();
+		if (this.right != null)
+			r = right.toString();
+		if (this.iftrue != null)
+			t = iftrue.toString();
+		if (this.iffalse != null)
+			f = iffalse.toString();
+
+		return "CJUMP(" + relop + "," + l + "," + r + "," + t + "," + f + ")";
+	}
 }

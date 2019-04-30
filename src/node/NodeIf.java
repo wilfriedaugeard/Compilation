@@ -1,6 +1,6 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
 
 public final class NodeIf extends Node {
 
@@ -45,14 +45,14 @@ public final class NodeIf extends Node {
 	private Node getThenNode() {
 		return this.get(1);
 	}
-	
+
 	public final static int EQ = 0, NE = 1, LT = 2, GT = 3, LE = 4, GE = 5, ULT = 6, ULE = 7, UGT = 8, UGE = 9;
 
 	@Override
 	public IntermediateCode generateIntermediateCode() {
 		NodeExp ifExp = (NodeExp) this.getExpNode();
-		int relop=-1;
-		switch(ifExp.getName())	{
+		int relop = -1;
+		switch (ifExp.getName()) {
 		case "==":
 			relop = EQ;
 			break;
@@ -71,11 +71,19 @@ public final class NodeIf extends Node {
 		case ">=":
 			relop = GE;
 			break;
+		default:
+			break;
 		}
+		Cjump c;
 		this.getThenNode().generateIntermediateCode();
-		this.getElseNode().generateIntermediateCode();
-		Cjump c = new Cjump(relop,this.getThenNode().getIntExp(),this.getElseNode().getIntExp(),new LabelLocation("then"), new LabelLocation("else"));
-		return c;	
+		if (this.getElseNode() != null) {
+			this.getElseNode().generateIntermediateCode();
+			c = new Cjump(relop, this.getThenNode().getIntExp(), this.getElseNode().getIntExp(),
+					new LabelLocation("then"), new LabelLocation("else"));
+		} else {
+			c = new Cjump(relop, this.getThenNode().getIntExp(), null, new LabelLocation("then"), null);
+		}
+		return c;
 	}
 
 }

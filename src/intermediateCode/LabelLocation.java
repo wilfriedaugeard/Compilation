@@ -25,7 +25,7 @@ public class LabelLocation {
 	/**
 	 * Makes a new label whose name is the same as a symbol.
 	 */
-	//public LabelLocation(Symbol s) {
+	// public LabelLocation(Symbol s) {
 //		this(s.toString());
 //	}
 

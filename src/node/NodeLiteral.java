@@ -1,6 +1,6 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
 
 import type.Type;
 
@@ -34,12 +34,11 @@ public final class NodeLiteral extends NodeExp {
 	public NodeLiteral clone() {
 		return new NodeLiteral(type, value);
 	}
-	
+
 	@Override
 	public IntermediateCode generateIntermediateCode() {
-		// A REVOIR
-		this.exp = new Const((int) this.value);
-		return  this.exp;
+		this.exp = new Const(this.value);
+		return this.exp;
 	}
 
 }

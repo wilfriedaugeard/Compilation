@@ -59,8 +59,10 @@ public final class NodeCallFct extends NodeExp {
 		}
 
 		System.out.print("-- result " + this.getClass().getSimpleName() + " : ");
-		if (result) System.out.println("success");
-		else 	System.out.println("faillure");
+		if (result)
+			System.out.println("success");
+		else
+			System.out.println("faillure");
 		// Plus ou moins d'arguments que de paramètres
 		if (result && (itArgs.hasNext() || itParams.hasNext())) {
 			System.err.println("*** Erreur de typage: pas le même nombre de paramètres ");
@@ -81,30 +83,31 @@ public final class NodeCallFct extends NodeExp {
 		}
 		return node;
 	}
-	
+
 	@Override
 	protected String toDotNodeName() {
 		return "NodeCallFct " + name + "()";
 	}
 
 	@Override
-	public IntermediateCode generateIntermediateCode()  {
- 
-		//CREER LISTE DE VARIABLE TEMPORAIRE des arg
-		//JUMP(LABEL(NOM de fonction))
-		Name func = new Name (new LabelLocation(this.name));
-		ExpList arg = new ExpList(null,null);
-		Iterator<Node> itArgs = this.getArgs().iterator();
-		while(itArgs.hasNext()) {
-			NodeExp nodeArg = (NodeExp) itArgs.next();
-			nodeArg.generateIntermediateCode();
-			arg = new ExpList(nodeArg.getIntExp(),arg);
+	public IntermediateCode generateIntermediateCode() {
+
+		// CREER LISTE DE VARIABLE TEMPORAIRE des arg
+		// JUMP(LABEL(NOM de fonction))
+		Name func = new Name(new LabelLocation(this.name));
+		ExpList arg = new ExpList(null, null);
+		if (this.getArgs() != null) {
+			Iterator<Node> itArgs = this.getArgs().iterator();
+			while (itArgs.hasNext()) {
+				NodeExp nodeArg = (NodeExp) itArgs.next();
+				nodeArg.generateIntermediateCode();
+				arg = new ExpList(nodeArg.getIntExp(), arg);
+			}
 		}
 		Call c = new Call(func, arg);
-		this.exp =c;
-		return c;
-		
-	}
+		this.exp = c;
+		return new Jump(func.getLabel());
 
+	}
 
 }

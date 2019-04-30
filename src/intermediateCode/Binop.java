@@ -15,8 +15,10 @@ public class Binop extends Exp {
 			XOR = 9;
 
 	public String toString() {
-		String result = new String();
-		return result;
+		if (right != null)
+			return "BINOP(" + binop + "," + left.toString() + "," + right.toString() + ")";
+		else
+			return "BINOP(" + binop + "," + left.toString() + ",null)";
 	}
 
 }

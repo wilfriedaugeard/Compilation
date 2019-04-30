@@ -11,5 +11,4 @@ public abstract class Stm implements IntermediateCode {
 		System.err.println("TODO: " + this.getClass().getSimpleName() + ".canonicalTransformation()()");
 	}
 
-
 }

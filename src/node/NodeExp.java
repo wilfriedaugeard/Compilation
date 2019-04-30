@@ -15,16 +15,15 @@ public abstract class NodeExp extends Node {
 	public Type getType() {
 		return this.type;
 	}
-	
+
 	public String getName() {
 		return "";
 	}
-	
-	@Override
-	public IntermediateCode generateIntermediateCode()  {
-		return null;
-		
-	}
 
+	@Override
+	public IntermediateCode generateIntermediateCode() {
+		return null;
+
+	}
 
 }

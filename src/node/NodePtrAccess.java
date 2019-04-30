@@ -3,11 +3,10 @@ package node;
 import type.*;
 import intermediateCode.*;
 
-
 public final class NodePtrAccess extends NodeExp {
 
 	private String name;
-	
+
 	// e = NodeExp(TypePointer(\tau))
 	public NodePtrAccess(NodeExp e) {
 		super(e);
@@ -19,7 +18,7 @@ public final class NodePtrAccess extends NodeExp {
 					this.type = tr;
 			}
 		}
-		this.name=e.getName();
+		this.name = e.getName();
 	}
 
 	@Override
@@ -34,12 +33,12 @@ public final class NodePtrAccess extends NodeExp {
 	public NodePtrAccess clone() {
 		return new NodePtrAccess((NodeExp) this.get(0).clone());
 	}
-	
+
 	@Override
 	public String getName() {
 		return this.name;
 	}
-	
+
 	@Override
 	public IntermediateCode generateIntermediateCode() {
 		this.get(0).generateIntermediateCode();

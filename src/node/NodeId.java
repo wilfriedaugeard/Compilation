@@ -1,6 +1,6 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
 
 import type.Type;
 
@@ -17,7 +17,7 @@ public final class NodeId extends NodeExp {
 	public String toString() {
 		return this.getClass().getSimpleName() + "#" + name + ':' + type + '#';
 	}
-	
+
 	@Override
 	public String getName() {
 		return this.name;
@@ -39,7 +39,7 @@ public final class NodeId extends NodeExp {
 	public NodeId clone() {
 		return new NodeId(name, type);
 	}
-	
+
 	@Override
 	public IntermediateCode generateIntermediateCode() {
 		Name n = new Name(new LabelLocation(this.name));

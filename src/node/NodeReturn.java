@@ -1,6 +1,6 @@
 package node;
-import intermediateCode.*;
 
+import intermediateCode.*;
 
 public final class NodeReturn extends NodeExp {
 
@@ -20,9 +20,9 @@ public final class NodeReturn extends NodeExp {
 	public NodeReturn clone() {
 		return new NodeReturn((Node) get(0).clone());
 	}
-	
+
 	@Override
-	public IntermediateCode generateIntermediateCode()  {
+	public IntermediateCode generateIntermediateCode() {
 		this.get(0).generateIntermediateCode();
 		this.exp = new Temp(new TempValue());
 		return this.exp;
