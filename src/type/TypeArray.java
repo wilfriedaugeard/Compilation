@@ -6,6 +6,7 @@ public class TypeArray extends TypeComplex {
 
 	public TypeArray(Type t1, Type t2) {
 		super(t1, t2);
+		
 	}
 
 	@Override
