@@ -49,9 +49,9 @@ public final class NodeIf extends Node {
 	public final static int EQ = 0, NE = 1, LT = 2, GT = 3, LE = 4, GE = 5, ULT = 6, ULE = 7, UGT = 8, UGE = 9;
 
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode() {
 		NodeExp ifExp = (NodeExp) this.getExpNode();
-		int relop;
+		int relop=-1;
 		switch(ifExp.getName())	{
 		case "==":
 			relop = EQ;
@@ -72,20 +72,10 @@ public final class NodeIf extends Node {
 			relop = GE;
 			break;
 		}
-		sl = this.getThenNode().generateIntermediateCode(sl);
-		LabelLocation t = new LabelLocation();
-		Name tname = new Name(t);
-		Label tlabel = new Label(t);
-		sl.add(tlabel);
-		LabelLocation e = new LabelLocation();
-		Name ename = new Name(e);
-		Label elabel = new Label(e);
-		sl.add(elabel);
-		Cjump cjump = new Cjump(relop, t, e,tlabel, elabel);
-		sl.add(cjump);
-		return sl;
-		
-		
+		this.getThenNode().generateIntermediateCode();
+		this.getElseNode().generateIntermediateCode();
+		Cjump c = new Cjump(relop,this.getThenNode().getIntExp(),this.getElseNode().getIntExp(),new LabelLocation("then"), new LabelLocation("else"));
+		return c;	
 	}
 
 }

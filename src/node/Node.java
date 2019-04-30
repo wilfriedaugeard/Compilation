@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import main.*;
 import node.NodeInterface;
@@ -14,6 +15,7 @@ public abstract class Node extends ClonableSymbol implements NodeInterface {
 	protected List<Node> elts;
 	protected int uniqId;
 	private static int staticUniqId;
+	protected Exp exp;
 
 	public Node() {
 		super();
@@ -91,12 +93,24 @@ public abstract class Node extends ClonableSymbol implements NodeInterface {
 			System.err.println("ERROR: build dot");
 		}
 	}
-
-	@Override
-	public StmList generateIntermediateCode(StmList sl)  {
-		// TODO Auto-generated method stub
-		System.err.println("TODO: " + this.getClass().getSimpleName() + ".generateIntermediateCode()");
-		return sl;
+	
+	public Exp getIntExp() {
+		return this.exp;
 	}
+
+
+	private Stm seqRec(Iterator<Node> arg) {
+		Stm s = (Stm) arg.next().generateIntermediateCode();
+		if(arg.hasNext()) return new Seq(s,seqRec(arg));
+		else return null;
+	}
+	
+	
+	public IntermediateCode generateIntermediateCode() {
+		//ExpList sur les élements
+		Iterator<Node> itArgs = this.elts.iterator();
+		return seqRec(itArgs);
+	}
+
 
 }

@@ -21,8 +21,8 @@ public abstract class NodeExp extends Node {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		return sl;
+	public IntermediateCode generateIntermediateCode()  {
+		return null;
 		
 	}
 

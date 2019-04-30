@@ -19,7 +19,8 @@ public class Main {
 					 System.err.println("*** Fichier " + arg);
 					 Node result = (Node) parser.parse(input);
 					 System.err.println("*** Analyse syntaxique ok");
-					 result.generateIntermediateCode(new StmList(null,null));
+					 IntermediateCode c = result.generateIntermediateCode();
+					 System.out.println(c.toString());
 					 
 					 if (checksType) {
 						 if (!result.checksType())

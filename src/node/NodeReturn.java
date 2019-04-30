@@ -22,9 +22,10 @@ public final class NodeReturn extends NodeExp {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		// MEM ?
-		return sl;
+	public IntermediateCode generateIntermediateCode()  {
+		this.get(0).generateIntermediateCode();
+		this.exp = new Temp(new TempValue());
+		return this.exp;
 	}
 
 }

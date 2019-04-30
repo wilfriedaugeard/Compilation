@@ -40,9 +40,8 @@ public final class NodeSwitch extends Node {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		//ESEQ 
-		return sl;
+	public IntermediateCode generateIntermediateCode()  {		//ESEQ 
+		return null;
 		}
 
 }

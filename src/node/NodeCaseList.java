@@ -21,8 +21,9 @@ public final class NodeCaseList extends NodeExp {
 		return new NodeCaseList();
 	}
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		return sl;
+	public IntermediateCode generateIntermediateCode(){
+		// A REVOIR
+		return new ExpList(null,null);
 	}
 
 

@@ -53,10 +53,10 @@ public class NodeRel extends NodeExp {
 	};
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode()  {
 		
 		//A VOIR
-		return sl;
+		return null;
 	}
 
 }

@@ -38,14 +38,12 @@ public final class NodeCase extends Node {
 		return defaultValue;
 	}
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode()  {
 		Name caseName = new Name(new LabelLocation(this.nameValue));
-		StmList stm = getStm().generateIntermediateCode(sl);
+		IntermediateCode stm = this.getStm().generateIntermediateCode();
 		//veut stm et pas stmList faut récuperer tete
-		Eseq eseq = new Eseq(stm, caseName);
-		
-		sl.add(eseq);
-		return sl;
+		//Eseq eseq = new Eseq(stm, caseName);
+		return null;
 	}
 
 }

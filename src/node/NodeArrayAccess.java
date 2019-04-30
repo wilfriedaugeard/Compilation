@@ -53,14 +53,14 @@ public final class NodeArrayAccess extends NodeExp {
 	public String getName() {
 		return this.name;
 	}
+	
 
 	@Override
-	public StmList generateIntermediateCode(StmList sl)  {
-		
-		LabelLocation label = new LabelLocation(this.name);
-		Label l = new Label(label);
-		sl.add(l);
-		return sl;
+	public IntermediateCode generateIntermediateCode()  {
+		this.get(0).generateIntermediateCode();
+		Mem m = new Mem(this.get(0).getIntExp());
+		this.exp = m;
+		return m;
 	}
 
 

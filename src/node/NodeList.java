@@ -47,11 +47,17 @@ public final class NodeList extends Node {
 		return node;
 	}
 	
-	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		//ExpList sur les élements
-		return sl;
+	public Stm seqRec(Iterator<Node> arg) {
+		Stm s = (Stm) arg.next().generateIntermediateCode();
+		if(arg.hasNext()) return new Seq(s,seqRec(arg));
+		else return null;
 	}
-
+	
+	@Override
+	public IntermediateCode generateIntermediateCode() {
+		//ExpList sur les élements
+		Iterator<Node> itArgs = this.elts.iterator();
+		return seqRec(itArgs);
+	}
 
 }

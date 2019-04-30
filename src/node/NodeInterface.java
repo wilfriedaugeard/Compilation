@@ -9,7 +9,7 @@ public interface NodeInterface {
 	boolean checksType();
 
 	// Cette méthode, non encore implémentée produit le code intermédiaire Exp ou Stm
-	public StmList generateIntermediateCode(StmList sl);
+	public IntermediateCode generateIntermediateCode();
 	
 	// Affiche sous forme parenthésée ce Node
 	String toString();
@@ -17,5 +17,7 @@ public interface NodeInterface {
 	// Crée un fichier <file>.dot
 	// usage: dot -Tpng -o <file>.png <file>.dot
 	public void toDot(String file);
+	
+	public Exp getIntExp();
 	
 }

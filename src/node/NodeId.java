@@ -41,11 +41,10 @@ public final class NodeId extends NodeExp {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode() {
 		Name n = new Name(new LabelLocation(this.name));
-		Label label = new Label(n.getLabel());
-		sl.add(label);
-		return sl;
+		this.exp = n;
+		return n;
 	}
 
 }

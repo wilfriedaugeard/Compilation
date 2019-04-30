@@ -88,7 +88,8 @@ public final class NodeCallFct extends NodeExp {
 	}
 
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode()  {
+ 
 		//CREER LISTE DE VARIABLE TEMPORAIRE des arg
 		//JUMP(LABEL(NOM de fonction))
 		Name func = new Name (new LabelLocation(this.name));
@@ -96,15 +97,12 @@ public final class NodeCallFct extends NodeExp {
 		Iterator<Node> itArgs = this.getArgs().iterator();
 		while(itArgs.hasNext()) {
 			NodeExp nodeArg = (NodeExp) itArgs.next();
-			arg.add(nodeArg.generateIntermediateCode(new StmList(null,null)));
+			nodeArg.generateIntermediateCode();
+			arg = new ExpList(nodeArg.getIntExp(),arg);
 		}
 		Call c = new Call(func, arg);
-		// A FAIRE
-		// il faut avoir la liste des labels de chaque arg
-		Jump j = new Jump(c, func.getLabel());
-		
-		sl.add(j);
-		return sl;
+		this.exp =c;
+		return c;
 		
 	}
 

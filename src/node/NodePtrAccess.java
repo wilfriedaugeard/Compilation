@@ -41,10 +41,11 @@ public final class NodePtrAccess extends NodeExp {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		
-		////CALL sur case label correspondant a cette case qui deviendra un JUMP
-		return sl;
+	public IntermediateCode generateIntermediateCode() {
+		this.get(0).generateIntermediateCode();
+		Mem m = new Mem(this.get(0).getIntExp());
+		this.exp = m;
+		return m;
 	}
 
 }

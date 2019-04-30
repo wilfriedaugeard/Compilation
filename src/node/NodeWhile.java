@@ -40,7 +40,7 @@ public final class NodeWhile extends Node {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode()  {
 		//NAME TEST (boolexpr)
 		//CALL WHILE
 		//CALL END
@@ -49,7 +49,7 @@ public final class NodeWhile extends Node {
 		//CALL TEST
 		//NAME END
 		// le tout dans expList
-		return sl;
+		return null;
 	}
 
 

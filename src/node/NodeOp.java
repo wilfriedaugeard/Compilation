@@ -52,14 +52,43 @@ public class NodeOp extends NodeExp {
 		return null;
 		};
 		
-		@Override
-		public StmList generateIntermediateCode(StmList sl) {
+		
+	public final static int PLUS = 0, MINUS = 1, MUL = 2, DIV = 3, AND = 4, OR = 5, LSHIFT = 6, RSHIFT = 7, ARSHIFT = 8,
+				XOR = 9;	
+	@Override
+	public IntermediateCode generateIntermediateCode() {
 			// code intermediaire op1 et op2
 			// switch sur les name (pour trouver l'opérateur)
 			// BINOP
-	return sl;
-			
+		this.getOp1().generateIntermediateCode();
+		this.getOp2().generateIntermediateCode();
+		int op =0;
+		switch(this.name) {
+		case"+":
+			op=PLUS;
+			break;
+		case "-":
+			op=MINUS;
+			break;
+		case"*":
+			op=MUL;
+			break;
+		case "/":
+			op=DIV;
+			break;
+		case"&&":
+			op=AND;
+			break;
+		case "||":
+			op=OR;
+			break;
+		default:
+			break;
 		}
+		this.exp=new Binop(op,this.getOp1().getIntExp(), this.getOp2().getIntExp());
+		return this.exp;
+			
+	}
 	
 
 }

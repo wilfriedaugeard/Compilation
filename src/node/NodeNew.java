@@ -21,9 +21,8 @@ public final class NodeNew extends Node {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		// VOIR DISPOSE
-		return sl;
+	public IntermediateCode generateIntermediateCode() {
+		return get(0).generateIntermediateCode();
 	}
 
 }

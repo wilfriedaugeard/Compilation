@@ -21,9 +21,10 @@ public final class NodeDispose extends Node {
 		return new NodeDispose((Node) this.get(0).clone());
 	}
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		//A FAIRE
-		return sl;
+	public IntermediateCode generateIntermediateCode() {
+		get(0).generateIntermediateCode();
+		Move move = new Move(get(0).getIntExp(),new Name(new LabelLocation("null")));
+		return move;
 	}
 
 }

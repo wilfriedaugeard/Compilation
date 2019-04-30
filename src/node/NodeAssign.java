@@ -51,22 +51,13 @@ public final class NodeAssign extends Node {
 	};
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
+	public IntermediateCode generateIntermediateCode()  {
 		// code intermédiaire lhs et de rhs 
-		// MOVE(MEM(lhs), rhs), 
-		sl = this.getLhs().generateIntermediateCode(sl);
-		LabelLocation l = new LabelLocation();
-		Name lname = new Name(l);
-		Label llabel = new Label(l);
-		sl.add(llabel);
-		sl = this.getRhs().generateIntermediateCode(sl);
-		Name rname = new Name(l);
-		Label rlabel = new Label(l);
-		sl.add(rlabel);
-		Mem mem = new Mem(lname);
-		Move move = new Move(mem, rname);
-		sl.add(move);
-		return sl;
+		// MOVE(MEM(lhs), rhs)
+		getLhs().generateIntermediateCode();
+		getRhs().generateIntermediateCode();
+		Move move = new Move(getLhs().getIntExp(),getRhs().getIntExp());
+		return move;
 	}
 
 }

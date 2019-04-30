@@ -36,9 +36,10 @@ public final class NodeLiteral extends NodeExp {
 	}
 	
 	@Override
-	public StmList generateIntermediateCode(StmList sl) {
-		//CONST
-		return sl;
+	public IntermediateCode generateIntermediateCode() {
+		// A REVOIR
+		this.exp = new Const((int) this.value);
+		return  this.exp;
 	}
 
 }
