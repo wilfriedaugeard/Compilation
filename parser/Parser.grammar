@@ -345,7 +345,7 @@ procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {:
                         TypeFunct tf = (TypeFunct) procedureEnvironment.getVariableValue(e); 
                         TypeTuple tt = tf.getParams();
                         if (list.size()!= tt.size())semanticError("erreur parametres",tf);   
-                        // on a l'idee bug null ptr a cause de Type ni = n.getType()
+                        // on a l'idee bug null ptr a    cause de Type ni = n.getType()
                         // Iterator<Node> i = list.iterator();
                         // Iterator<Type> t = tt.iterator();
                         // System.out.println("dddddddd e"+list+ " \n"+ tt);
