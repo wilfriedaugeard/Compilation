@@ -18,15 +18,16 @@
     }
     
     public void semanticError(String msg, Symbol token) {
-            System.err.format("*** " + msg + " ligne %d, colonne %d\n",
-                Symbol.getLine(token.getStart()),
+            System.err.format("/!\\ " + msg + " ligne %d /!\\\n",
                 Symbol.getColumn(token.getStart()));
+            // System.exit(1);
         }
         
     private Environment typeEnvironment         = new Environment("types");
     private Environment procedureEnvironment    = new Environment("procedures");
     private StackEnvironment stackEnvironment   = new StackEnvironment("local variables stack");
     private String type_declaration_name;
+    private String type_error_string = "";
     
 :};
 
@@ -119,7 +120,18 @@ type_declaration_list = type_declaration_list.list type_declaration.e	{: list.ad
                       | type_declaration.e 								{: return new TypeList(e); :}
                       ;
 
-type_declaration = type_declaration_head.e EQUALS type.f SEMI	{: System.out.println("&& 112 - e : " + e + "\nf : " + f); typeEnvironment.putVariable(e.getConst_value(), f); return new TypeFeature(e.getConst_value(),f); :}
+type_declaration = type_declaration_head.e EQUALS type.t SEMI	{: 
+                                                                    System.out.println("&& 112 - e : " + e + "\nt : " + t); 
+                                                                    if (t instanceof TypeNamed) {
+                                                                        TypeNamed tn = (TypeNamed) t;
+                                                                        Type t2 = typeEnvironment.getVariableValue(tn.getName());
+                                                                        if (t2 == null) semanticError("type_declaration error ", t);
+                                                                        typeEnvironment.putVariable(tn.getName(), tn);
+                                                                        return new TypeFeature(e.getConst_value(),t2);
+                                                                    }
+                                                                    typeEnvironment.putVariable(e.getConst_value(), t); 
+                                                                    return new TypeFeature(e.getConst_value(),t); 
+                                                                :}
                 ;
 
 type_declaration_head = IDENTIFIER.e	{: return new TypeString(e); :}
@@ -161,15 +173,22 @@ enumerated_type = LPAR identifier_list.e RPAR {:
                 :}
                 ;
 
-subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{: return new TypeArrayRange(new TypeInt(e),new TypeInt(f)); :}
+subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{:
+                    TypeInt ti_e = new TypeInt(e);
+                    TypeInt ti_f = new TypeInt(f);
+                    if (ti_e.getConst_value() > ti_f.getConst_value()) semanticError("invalid TypeArrayRange ", ti_e);
+                    return new TypeArrayRange(ti_e, ti_f); 
+                :}
               | IDENTIFIER.e DOT IDENTIFIER.f		{:
                     Type te = typeEnvironment.getVariableValue(e);
                     Type tf = typeEnvironment.getVariableValue(f);
+                    if (te == null || tf == null) semanticError("invalid TypeArrayRange ", te);
                     if (te instanceof TypeItemEnum && tf instanceof TypeItemEnum) {
                         TypeItemEnum tiee = (TypeItemEnum) te;
                         TypeItemEnum tief = (TypeItemEnum) tf;
                         TypeInt int_e = new TypeInt(tiee.getConst_value());
                         TypeInt int_f = new TypeInt(tief.getConst_value());
+                        if (int_e.getConst_value() > int_f.getConst_value()) semanticError("invalid TypeArrayRange ", te);
                         return new TypeArrayRange(int_e, int_f); 
                     }
                     System.out.println("&& 156 te : " + te + "\ntf : " + tf); 
@@ -241,6 +260,8 @@ procedure_definition =  procedure_definition_head block
 
 					
 procedure_definition_head = PROCEDURE IDENTIFIER.id LPAR argt_part.args RPAR {:
+                                Type tid = procedureEnvironment.getVariableValue(id);
+                                if (tid != null) semanticError("Already declared", tid);
                                 TypeTuple tt = new TypeTuple();
                                 Iterator<Node> i = args.iterator();
                                 while (i.hasNext()) {
@@ -253,7 +274,8 @@ procedure_definition_head = PROCEDURE IDENTIFIER.id LPAR argt_part.args RPAR {:
                                 return tf;
                             :}
                           | FUNCTION IDENTIFIER.id LPAR argt_part.args RPAR COLON type.ty {:
-                                // TypeFeature tfe = new TypeFeature(id, ty);
+                                Type tid = procedureEnvironment.getVariableValue(id);
+                                if (tid != null) semanticError("Already declared", tid);
                                 TypeTuple tt = new TypeTuple();
                                 Iterator<Node> i = args.iterator();
                                 while (i.hasNext()) {
