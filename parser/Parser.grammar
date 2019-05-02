@@ -59,7 +59,8 @@
 %typeof expression, variable_access, procedure_expression = "NodeExp";
 %typeof expression_part, expresion_list, variable_declaration_list, procedure_definition_list, argt_list, statement_list, argt_part = "NodeList";
 %typeof variable_declaration, procedure_definition, argt, statement = "Node";
-%typeof case_statement_list, case_statement = "NodeCaseList";
+%typeof case_statement_list = "NodeCaseList";
+%typeof case_statement = "NodeCase";
 %typeof type_declaration, type, range_type, pointer_type, structure_type, feature_type = "Type";
 %typeof type_declaration_head = "TypeString";
 %typeof type_declaration_list, feature_list_type = "TypeList";
@@ -368,17 +369,15 @@ switch_statement = SWITCH expression.e BEGIN case_statement_list.s END		{: retur
                 ;
 
 case_statement_list = case_statement_list.list case_statement.s	case_default    {: list.add(s); return list; :}
-                    | case_statement.s							                {: return s; :}
+                    | case_statement.s							                {: NodeCaseList ncl = new NodeCaseList() ; ncl.add(s); return ncl; :}
                     ;
 
 case_statement = CASE identifier_list.list COLON statement.s    {: 
-                                                                    System.out.println("&& 352 - s : " + s);
-                                                                    NodeCaseList ncl = new NodeCaseList();
-                                                                    for (String id : list) {
-                                                                        ncl.add(new NodeCase(id, s));
+                                                                    String c = "";
+                                                                    for(String id : list ){
+                                                                        c = c +" , "+id;
                                                                     }
-                                                                    System.out.println("&& 357 - ncl : " + ncl);
-                                                                    return ncl;	
+                                                                    return new NodeCase(c,s);
                                                                 :}
                 ;
                 

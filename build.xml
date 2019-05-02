@@ -46,6 +46,7 @@
 		<java classname="main.Main" classpath="bin" classpathref="beaverclasspath" output="data/output">
 			<arg value="-checkType" />
 			<arg value="data/progr9.lea" />
+			
 		</java>
 	</target>
 

@@ -19,7 +19,7 @@ public class Main {
 					 System.err.println("*** Fichier " + arg);
 					 Node result = (Node) parser.parse(input);
 					 System.err.println("*** Analyse syntaxique ok");
-					 result.toDot("file.dot");
+					 result.toDot("file.gv");
 					 IntermediateCode InterCode = result.generateIntermediateCode();
 					 System.out.println(InterCode.toString());
 					 
