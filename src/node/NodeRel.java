@@ -66,7 +66,7 @@ public class NodeRel extends NodeExp {
 			right = this.getOp2().getIntExp();
 		else
 			right = null;
-		Binop newExp, first, less, less2, more, xor, eq;
+		Binop newExp, first, less, less2, more,more2, xor, eq;
 		switch (this.name) {
 		case "&&":
 			newExp = new Binop(AND, left, right);
@@ -100,8 +100,8 @@ public class NodeRel extends NodeExp {
 			xor = new Binop(XOR, less, more);
 			eq = new Binop(XOR, xor, new Temp(new TempValue()));
 			first = new Binop(MINUS, right, null);
-			more = new Binop(AND, left, first);
-			newExp = new Binop(OR, more, eq);
+			more2 = new Binop(AND, left, first);
+			newExp = new Binop(OR, more2, eq);
 			break;
 		case "==":
 			// NOT (LESS XOR MORE)
