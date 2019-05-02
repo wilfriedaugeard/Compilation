@@ -332,7 +332,10 @@ simple_statement = assignment_statement.e 	{: return e; :}
                  | return_statement.e 		{: return e; :}
                  ;
 
-assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: return new NodeAssign(e,f); :}
+assignment_statement = variable_access.e EQUALS expression.f SEMI 		{: 
+                            if (!e.getType().equals(f.getType())) semanticError("Type affectation error ", f);
+                            return new NodeAssign(e,f); 
+                        :}
                     ;
 
 procedure_statement = procedure_expression.e SEMI  {: return e ; :}
