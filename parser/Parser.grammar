@@ -343,6 +343,18 @@ procedure_statement = procedure_expression.e SEMI  {: return e ; :}
 
 procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: 
                         TypeFunct tf = (TypeFunct) procedureEnvironment.getVariableValue(e); 
+                        TypeTuple tt = tf.getParams();
+                        if (list.size()!= tt.size())semanticError("erreur parametres",tf);   
+                        // on a l'idee bug null ptr a cause de Type ni = n.getType()
+                        // Iterator<Node> i = list.iterator();
+                        // Iterator<Type> t = tt.iterator();
+                        // System.out.println("dddddddd e"+list+ " \n"+ tt);
+                        // while (i.hasNext() && t.hasNext()) {
+                        //     NodeId n = (NodeId) i.next();
+                        //     Type ti = (Type) t.next();
+                        //     Type ni = n.getType();
+                        //     if(!ni.equals(ti)) semanticError("param faux", tf);
+                        // }
                         return new NodeCallFct(e, tf, list);
                     :}
                     ;
@@ -410,26 +422,26 @@ case_default =
 	        | DEFAULT COLON statement.s {: return new NodeCase(s); :}
 	        ;
 
-variable_access = IDENTIFIER.str								{:  Type t;
-                                                    if(stackEnvironment.getVariableValue(str)!=null)
-                                                      t = stackEnvironment.getVariableValue(str);
-                                                    else
-                                                    t = typeEnvironment.getVariableValue(str);
-                                                    if (t instanceof TypeItemEnum) {
-                                                        System.out.println("&& 355 t : " + t);
-                                                        TypeItemEnum tie = (TypeItemEnum) t;
-                                                        int x = tie.getConst_value();
-                                                        TypeInt ti = new TypeInt(x);
-                                                        return new NodeId(str, ti);
-                                                    }
-                                                    if (t instanceof TypeNamed) {
-                                                        TypeNamed tt = (TypeNamed) t;
-                                                        Type tp = typeEnvironment.getVariableValue(tt.getName());
-                                                        System.out.println("&& 355 t2 : " + tp);
-                                                        return new NodeId(str, tp);
-                                                    }
-                                                    return new NodeId(str, t); 
-                                                :}
+variable_access = IDENTIFIER.str {: Type t;
+                                    if(stackEnvironment.getVariableValue(str)!=null)
+                                        t = stackEnvironment.getVariableValue(str);
+                                    else
+                                    t = typeEnvironment.getVariableValue(str);
+                                    if (t instanceof TypeItemEnum) {
+                                        System.out.println("&& 355 t : " + t);
+                                        TypeItemEnum tie = (TypeItemEnum) t;
+                                        int x = tie.getConst_value();
+                                        TypeInt ti = new TypeInt(x);
+                                        return new NodeId(str, ti);
+                                    }
+                                    if (t instanceof TypeNamed) {
+                                        TypeNamed tt = (TypeNamed) t;
+                                        Type tp = typeEnvironment.getVariableValue(tt.getName());
+                                        System.out.println("&& 355 t2 : " + tp);
+                                        return new NodeId(str, tp);
+                                    }
+                                    return new NodeId(str, t); 
+                                :}
                 | variable_access.v LBRA expression.e RBRA		{: System.out.println("&&& 367 - v : " + v + "\ne : " + e); return new NodeArrayAccess(v,e); :}
                 |  expression.e CIRC							{: return new NodePtrAccess(e); :}
                 ;
