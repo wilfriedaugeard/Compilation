@@ -13,3 +13,7 @@ build\.xml
 
 \.vscode/ipch/ddbe599a576b0dbc/
 /.metadata/
+
+file.gv
+output.png
+
