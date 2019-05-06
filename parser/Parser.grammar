@@ -26,9 +26,7 @@
     private Environment typeEnvironment         = new Environment("types");
     private Environment procedureEnvironment    = new Environment("procedures");
     private StackEnvironment stackEnvironment   = new StackEnvironment("local variables stack");
-    private String type_declaration_name;
-    private String type_error_string = "";
-    
+    private String type_declaration_name;    
 :};
 
 %init {: 
@@ -102,13 +100,13 @@ program = type_declaration_part
         statement_list.l 
         END 
         empty_rule_program_end
-        {: System.out.println(typeEnvironment.toString()+"\n"); return l; :}
+        {: return l; :}
         ;
         
 empty_rule_program_begin = {: stackEnvironment.push(new HashMap<String, Type>()); return new TypeVoid(); :}
 					;
 					
-empty_rule_program_end = {:  System.out.println("!!!!! "+stackEnvironment.toString()+""); stackEnvironment.pop();return new TypeVoid(); :}
+empty_rule_program_end = {: stackEnvironment.pop(); return new TypeVoid(); :}
 					;
 
 
@@ -121,7 +119,6 @@ type_declaration_list = type_declaration_list.list type_declaration.e	{: list.ad
                       ;
 
 type_declaration = type_declaration_head.e EQUALS type.t SEMI	{: 
-                                                                    System.out.println("&& 112 - e : " + e + "\nt : " + t); 
                                                                     if (t instanceof TypeNamed) {
                                                                         TypeNamed tn = (TypeNamed) t;
                                                                         Type t2 = typeEnvironment.getVariableValue(tn.getName());
@@ -191,7 +188,6 @@ subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{:
                         if (int_e.getConst_value() > int_f.getConst_value()) semanticError("invalid TypeArrayRange ", te);
                         return new TypeArrayRange(int_e, int_f); 
                     }
-                    System.out.println("&& 156 te : " + te + "\ntf : " + tf); 
                     return new TypeArrayRange(new TypeString(e), new TypeString(f));
                 :}
               ;
@@ -199,7 +195,6 @@ subrange_type = LIT_INTEGER.e DOT LIT_INTEGER.f 	{:
 array_type = ARRAY LBRA range_type.e RBRA OF type.f	{:
                 //TODO:
                 TypeArray ta = new TypeArray(e, f);
-                System.out.println("&& 159 - ta : " + ta);
                 return ta; 
             :}	
             ;
@@ -231,10 +226,8 @@ variable_declaration_list = variable_declaration_list.list variable_declaration.
                           ;
 
 variable_declaration = identifier_list.list COLON type.e SEMI {: 
-    //TODO: verification typage : si != null et var.type == e
     NodeList nl = new NodeList();
     for (String id : list) {
-        System.out.println("&& 208 - id : " + id + "\ne : " + e);
         nl.add(new NodeId(id, e));
         stackEnvironment.putVariable(id,e);
     }
@@ -312,7 +305,7 @@ block =  empty_rule_begin
 empty_rule_begin =  {: stackEnvironment.push(new HashMap<String, Type>()); return new TypeVoid(); :}
 				;
 				
-empty_rule_end = {: System.out.println("!!!!! "+stackEnvironment.toString()+""); stackEnvironment.pop(); return new TypeVoid(); :}
+empty_rule_end = {: stackEnvironment.pop(); return new TypeVoid(); :}
 				;
 
 statement_list = statement_list.list statement.e 	{: list.add(e); return list; :}
@@ -344,7 +337,7 @@ procedure_statement = procedure_expression.e SEMI  {: return e ; :}
 procedure_expression = IDENTIFIER.e LPAR expression_part.list RPAR {: 
                         TypeFunct tf = (TypeFunct) procedureEnvironment.getVariableValue(e); 
                         TypeTuple tt = tf.getParams();
-                        if (list.size()!= tt.size())semanticError("erreur parametres",tf);   
+                        if (list.size()!= tt.size()) semanticError("erreur parametres",tf);   
                         // on a l'idee bug null ptr a    cause de Type ni = n.getType()
                         // Iterator<Node> i = list.iterator();
                         // Iterator<Type> t = tt.iterator();
@@ -428,7 +421,6 @@ variable_access = IDENTIFIER.str {: Type t;
                                     else
                                     t = typeEnvironment.getVariableValue(str);
                                     if (t instanceof TypeItemEnum) {
-                                        System.out.println("&& 355 t : " + t);
                                         TypeItemEnum tie = (TypeItemEnum) t;
                                         int x = tie.getConst_value();
                                         TypeInt ti = new TypeInt(x);
@@ -437,12 +429,11 @@ variable_access = IDENTIFIER.str {: Type t;
                                     if (t instanceof TypeNamed) {
                                         TypeNamed tt = (TypeNamed) t;
                                         Type tp = typeEnvironment.getVariableValue(tt.getName());
-                                        System.out.println("&& 355 t2 : " + tp);
                                         return new NodeId(str, tp);
                                     }
                                     return new NodeId(str, t); 
                                 :}
-                | variable_access.v LBRA expression.e RBRA		{: System.out.println("&&& 367 - v : " + v + "\ne : " + e); return new NodeArrayAccess(v,e); :}
+                | variable_access.v LBRA expression.e RBRA		{: return new NodeArrayAccess(v,e); :}
                 |  expression.e CIRC							{: return new NodePtrAccess(e); :}
                 ;
 

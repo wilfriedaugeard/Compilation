@@ -19,14 +19,14 @@ public class Main {
 					 System.err.println("*** Fichier " + arg);
 					 Node result = (Node) parser.parse(input);
 					 System.err.println("*** Analyse syntaxique ok");
-					 result.toDot("file.gv");
+					 result.toDot(arg + ".gv");
 					 IntermediateCode InterCode = result.generateIntermediateCode();
-					 System.out.println(InterCode.toString());
+					 //System.out.println(InterCode.toString());
 					 
 					 if (checksType) {
-						 if (!result.checksType())
-							 System.err.println("*** Erreur de typage");
-						 else
+						if (!result.checksType())
+							System.err.println("*** Erreur de typage");
+						else
 							 System.err.println("*** Typage correct");
 					 }
 				 } catch (beaver.Parser.Exception e) {
